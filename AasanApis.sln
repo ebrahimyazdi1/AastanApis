@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33927.249
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AasanApis", "AasanApis\AasanApis.csproj", "{569F9B3B-DDA1-452B-B719-0EE9DD687BBE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F5DBD273-E036-4DAF-A3BC-CCD9B7ED9EEA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{ADB2B7CC-8364-456B-BD40-BF61EE93034C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{569F9B3B-DDA1-452B-B719-0EE9DD687BBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{569F9B3B-DDA1-452B-B719-0EE9DD687BBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{569F9B3B-DDA1-452B-B719-0EE9DD687BBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{569F9B3B-DDA1-452B-B719-0EE9DD687BBE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{569F9B3B-DDA1-452B-B719-0EE9DD687BBE} = {F5DBD273-E036-4DAF-A3BC-CCD9B7ED9EEA}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9BDDDC3F-7646-423A-8820-16FA673D9BB6}
+	EndGlobalSection
+EndGlobal
