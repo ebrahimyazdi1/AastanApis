@@ -1,8 +1,8 @@
-﻿namespace AasanApis.Data.Entities
+﻿namespace AastanApis.Data.Entities
 {
-    public class AasanReqLog : BaseEntity<String>
+    public class AastanReqLog : BaseEntity<String>
     {
-        public AasanReqLog()
+        public AastanReqLog()
         {
             LogDateTime = DateTime.Now;
         }
@@ -14,7 +14,7 @@
         public string ServiceId { get; set; }
         public string PublicReqId { get; set; }
 
-        public ICollection<AasanResLog> AasanResLogs { get; set; }
+        public ICollection<AastanResLog> AastanResLogs { get; set; }
 
     }
 }

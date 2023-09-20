@@ -1,4 +1,4 @@
-﻿namespace AasanApis.ErrorHandling
+﻿namespace AastanApis.ErrorHandling
 {
     public class ErrorResult
     {

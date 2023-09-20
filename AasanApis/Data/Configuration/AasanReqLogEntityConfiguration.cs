@@ -1,15 +1,15 @@
-﻿using AasanApis.Data.Entities;
+﻿using AastanApis.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AasanApis.Data.Configuration
+namespace AastanApis.Data.Configuration
 {
-    public class AasanReqLogEntityConfiguration : IEntityTypeConfiguration<AasanReqLog>
+    public class AastanReqLogEntityConfiguration : IEntityTypeConfiguration<AastanReqLog>
     {
-        public void Configure(EntityTypeBuilder<AasanReqLog> builder)
+        public void Configure(EntityTypeBuilder<AastanReqLog> builder)
         {
 
-            builder.ToTable("Aasan_LOG_REQ");
+            builder.ToTable("Aastan_LOG_REQ");
             builder.HasKey(entity => entity.Id);
             builder.HasIndex(entity => entity.Id).IsUnique(true);
             builder.Property(entity => entity.Id).ValueGeneratedOnAdd();

@@ -1,14 +1,14 @@
-﻿using AasanApis.Data.Entities;
+﻿using AastanApis.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace AasanApis.Data
+namespace AastanApis.Data
 {
-    public class AasanDbContext : DbContext
+    public class AastanDbContext : DbContext
     {
-        public DbSet<AasanReqLog> SatnaReqLogs { get; set; }
-        public DbSet<AasanResLog> SatnaResLogs { get; set; }
+        public DbSet<AastanReqLog> SatnaReqLogs { get; set; }
+        public DbSet<AastanResLog> SatnaResLogs { get; set; }
         public DbSet<AccessTokenEntity> AccessTokens { get; set; }
-        public AasanDbContext(DbContextOptions<AasanDbContext> dbContext) : base(dbContext)
+        public AastanDbContext(DbContextOptions<AastanDbContext> dbContext) : base(dbContext)
         {
 
         }
@@ -18,7 +18,7 @@ namespace AasanApis.Data
             //       .Property(e => e.PayStatus)
             //       .HasConversion<string>();
             base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AasanDbContext).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AastanDbContext).Assembly);
         }
 
     }

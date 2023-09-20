@@ -1,11 +1,12 @@
-﻿using AasanApis.Data.Repositories;
-using AasanApis.Models;
+﻿using AasanApis.Services;
+using AastanApis.Data.Repositories;
+using AastanApis.Models;
 using Serilog;
 using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
 using System.Reflection;
 
-namespace AasanApis.Infrastructure.Extension
+namespace AastanApis.Infrastructure.Extension
 {
     public static class ServiceExtensions
     {
@@ -34,15 +35,13 @@ namespace AasanApis.Infrastructure.Extension
             };
         }
 
-        public static IServiceCollection AddFaraboomServices(this IServiceCollection services,
+        public static IServiceCollection AddAastanServices(this IServiceCollection services,
              IConfiguration configuration)
         {
-            services.Configure<AasanOptions>(configuration.GetSection(AasanOptions.SectionName));
-            //services.AddScoped<IPayaTransferClient, PayaTransferClient>();
-            //services.AddScoped<IPayaTransferService, PayaTransferService>();
-            //services.AddScoped<ISatnaTransferService, SatnaTransferService>();
-            //services.AddScoped<IPayaTransferRepository, PayaTransferRepository>();
-            //services.AddScoped<ISatnaTransferRepository, SatnaTransferRepository>();
+            services.Configure<AastanOptions>(configuration.GetSection(AastanOptions.SectionName));
+            services.AddScoped<IAastanClient, AastanClient>();
+            services.AddScoped<IAastanService, AastanService>();
+            services.AddScoped<IAastanRepository, IAastanRepository>();
             services.AddScoped<IBaseRepository, BaseRepository>();
             services.AddScoped<BaseLog>();
             return services;

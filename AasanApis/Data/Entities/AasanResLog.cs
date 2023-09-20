@@ -1,6 +1,6 @@
-﻿namespace AasanApis.Data.Entities
+﻿namespace AastanApis.Data.Entities
 {
-    public class AasanResLog :BaseEntity<string>
+    public class AastanResLog :BaseEntity<string>
     {
         public string ResCode { get; set; }
         public string HTTPStatusCode { get; set; }
@@ -8,6 +8,6 @@
         public string PublicReqId { get; set; }
         //***********//
         public string ReqLogId { get; set; }
-        public AasanReqLog PayaReqLog { get; set; }
+        public AastanReqLog PayaReqLog { get; set; }
     }
 }

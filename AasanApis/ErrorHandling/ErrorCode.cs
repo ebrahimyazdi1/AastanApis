@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace AasanApis.ErrorHandling
+namespace AastanApis.ErrorHandling
 {
     public enum ErrorCode
     {
@@ -38,10 +38,10 @@ namespace AasanApis.ErrorHandling
         InternalDBConnectionError = 1007,
 
         [Description("خطا در فراخوانی سرویس های آستان.")]
-        AasanApiError = 1008,
+        AastanApiError = 1008,
 
         [Description("خطا در به روز رسانی توکنهای آستان.")]
-        AasanTokenApiError = 1009,
+        AastanTokenApiError = 1009,
 
         [Description("توکن برای فراخوانی سرویس های آستان یافت نشد.")]
         TokenNotFound = 1010,

@@ -1,11 +1,15 @@
-﻿namespace AasanApis.Models
+﻿namespace AastanApis.Models
 {
-    public class AasanOptions
+    public class AastanOptions
     {
-        public const string SectionName = "Aasan";
+        public const string SectionName = "Aastan";
 
-        public string DeviceId { get; set; }
-        public string BaseAddress { get; set; }
-        public string AppKey { get; set; }
+        public string TokenAddress { get; set; }
+        public string RefreshTokenAddress { get; set; }
+        public string MachingServiceAddress { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
+
+
     }
 }

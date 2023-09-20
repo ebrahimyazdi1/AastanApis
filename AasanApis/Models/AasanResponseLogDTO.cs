@@ -1,5 +1,5 @@
-﻿namespace AasanApis.Models
+﻿namespace AastanApis.Models
 {
-    public record AasanResponseLogDTO(string publicRequestId, string jsonResponse,
+    public record AastanResponseLogDTO(string publicRequestId, string jsonResponse,
            string asanHttpResponseCode, string asanRequestId, string asanResCode);
 }

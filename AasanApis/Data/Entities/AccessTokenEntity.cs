@@ -1,4 +1,4 @@
-﻿namespace AasanApis.Data.Entities
+﻿namespace AastanApis.Data.Entities
 {
     public sealed class AccessTokenEntity
     {

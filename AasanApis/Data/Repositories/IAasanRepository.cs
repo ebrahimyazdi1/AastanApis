@@ -1,10 +1,10 @@
-﻿using AasanApis.Models;
+﻿using AastanApis.Models;
 
-namespace AasanApis.Data.Repositories
+namespace AastanApis.Data.Repositories
 {
-    public interface IAasanRepository
+    public interface IAastanRepository
     {
-        Task<string> InsertAasanResponseLog(AasanResponseLogDTO satnaResponseLogDTO);
-        Task<string> InsertAasanRequestLog(AasanRequestLogDTO satnaRequestLog);
+        Task<string> InsertAastanResponseLog(AastanResponseLogDTO satnaResponseLogDTO);
+        Task<string> InsertAastanRequestLog(AastanRequestLogDTO satnaRequestLog);
     }
 }

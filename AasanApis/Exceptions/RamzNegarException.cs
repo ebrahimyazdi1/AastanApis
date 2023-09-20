@@ -1,6 +1,6 @@
-﻿using AasanApis.ErrorHandling;
+﻿using AastanApis.ErrorHandling;
 
-namespace AasanApis.Exceptions
+namespace AastanApis.Exceptions
 {
     public class RamzNegarException : Exception
     {

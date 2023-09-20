@@ -1,4 +1,4 @@
-﻿namespace AasanApis.Data.Repositories
+﻿namespace AastanApis.Data.Repositories
 {
     public interface IBaseRepository
     {

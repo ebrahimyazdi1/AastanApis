@@ -1,16 +1,16 @@
-﻿using AasanApis.Data.Entities;
-using AasanApis.ErrorHandling;
-using AasanApis.Exceptions;
+﻿using AastanApis.Data.Entities;
+using AastanApis.ErrorHandling;
+using AastanApis.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Extensions;
 
-namespace AasanApis.Data.Repositories
+namespace AastanApis.Data.Repositories
 {
     public class BaseRepository :IBaseRepository
     {
-        private AasanDbContext _dbContext { get; set; }
+        private AastanDbContext _dbContext { get; set; }
         private ILogger<BaseRepository> _logger;
-        public BaseRepository(AasanDbContext dbContext,
+        public BaseRepository(AastanDbContext dbContext,
             ILogger<BaseRepository> logger)
         {
             _dbContext = dbContext;
@@ -31,7 +31,7 @@ namespace AasanApis.Data.Repositories
             {
                 query = new AccessTokenEntity();
                 query.Id = "7";
-                query.TokenName = "AasanToken";
+                query.TokenName = "AastanToken";
                 await _dbContext.AccessTokens.AddAsync(query).ConfigureAwait(false);
             }
             query.AccessToken = accessToken;
@@ -44,8 +44,8 @@ namespace AasanApis.Data.Repositories
             {
                 _logger.LogError(e.Message,
                     $"{nameof(AddOrUpdateTokenAsync)} -> applyUpdateToken in AddOrUpdateTokenAsync couldn't update.");
-                throw new RamzNegarException(ErrorCode.AasanTokenApiError,
-                    $"Exception occurred while: {nameof(AddOrUpdateTokenAsync)}  => {ErrorCode.AasanTokenApiError.GetDisplayName()}");
+                throw new RamzNegarException(ErrorCode.AastanTokenApiError,
+                    $"Exception occurred while: {nameof(AddOrUpdateTokenAsync)}  => {ErrorCode.AastanTokenApiError.GetDisplayName()}");
             }
 
             return query;

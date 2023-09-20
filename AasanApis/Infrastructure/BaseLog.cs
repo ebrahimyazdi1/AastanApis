@@ -1,28 +1,28 @@
-﻿using AasanApis.Data.Repositories;
-using AasanApis.ErrorHandling;
-using AasanApis.Exceptions;
-using AasanApis.Infrastructure.Extension;
-using AasanApis.Models;
+﻿using AastanApis.Data.Repositories;
+using AastanApis.ErrorHandling;
+using AastanApis.Exceptions;
+using AastanApis.Infrastructure.Extension;
+using AastanApis.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Extensions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 
-namespace AasanApis.Infrastructure
+namespace AastanApis.Infrastructure
 {
     public class BaseLog
     {
-        public IAasanRepository _repository { get; }
+        public IAastanRepository _repository { get; }
         public IBaseRepository _baseRepository { get; }
 
         private ILogger<BaseLog> _logger { get; }
-        private AasanOptions _options { get; }
+        private AastanOptions _options { get; }
 
         private readonly HttpClient _httpClient;
 
-        public BaseLog(IAasanRepository repository,
-            ILogger<BaseLog> logger, IOptions<AasanOptions> options
+        public BaseLog(IAastanRepository repository,
+            ILogger<BaseLog> logger, IOptions<AastanOptions> options
                 , HttpClient httpClient, IBaseRepository baseRepository)
         {
             _repository = repository;
@@ -33,7 +33,7 @@ namespace AasanApis.Infrastructure
         }
         public T ApiResponseSuccessByCodeProvider<T>(string response, string statusCode, string RequestId, string publicReqId) where T : new()
         {
-            _repository.InsertAasanResponseLog(new AasanResponseLogDTO(publicReqId, Convert.ToString(response), statusCode, RequestId, statusCode));
+            _repository.InsertAastanResponseLog(new AastanResponseLogDTO(publicReqId, Convert.ToString(response), statusCode, RequestId, statusCode));
 
             var responseResult = JsonSerializer.Deserialize<T>(response);
             return responseResult;
@@ -42,7 +42,7 @@ namespace AasanApis.Infrastructure
         {
             var codeProvider = new ErrorCodesProvider();
             codeProvider = codeProvider.errorCodesResponseResult(statusCode.ToString());
-            _repository.InsertAasanResponseLog(new AasanResponseLogDTO
+            _repository.InsertAastanResponseLog(new AastanResponseLogDTO
                 (publicReqId, Convert.ToString(response), codeProvider?.OutReponseCode.ToString(),
                 RequestId, codeProvider?.SafeReponseCode.ToString()));
             return ServiceHelperExtension.GenerateApiErrorResponse<ErrorResult>(codeProvider);
@@ -60,7 +60,7 @@ namespace AasanApis.Infrastructure
                 {
                     _logger.LogError($"token is null in the FindAccessToken method ->{ErrorCode.NotFound.GetDisplayName()}");
                     throw new RamzNegarException(ErrorCode.TokenNotFound,
-                                  ErrorCode.AasanApiError.GetDisplayName());
+                                  ErrorCode.AastanApiError.GetDisplayName());
                 }
                 requestHttpMessage.AddFaraboomCommonHeader(_options, token);
 
@@ -80,15 +80,15 @@ namespace AasanApis.Infrastructure
                 }
                 catch (TaskCanceledException e)
                 {
-                    throw new RamzNegarException(ErrorCode.AasanApiError,
-                        ErrorCode.AasanApiError.GetDisplayName());
+                    throw new RamzNegarException(ErrorCode.AastanApiError,
+                        ErrorCode.AastanApiError.GetDisplayName());
                 }
                 catch (Exception e)
                 {
                     _logger.LogError(e,
                         $"{callerMethodName} - request: '{request}' \r\n error message: {e.Message} ");
-                    throw new RamzNegarException(ErrorCode.AasanApiError,
-                                  ErrorCode.AasanApiError.GetDisplayName());
+                    throw new RamzNegarException(ErrorCode.AastanApiError,
+                                  ErrorCode.AastanApiError.GetDisplayName());
                 }
 
                 var responseContent = await (httpResponseMessage?.Content?.ReadAsStringAsync())
