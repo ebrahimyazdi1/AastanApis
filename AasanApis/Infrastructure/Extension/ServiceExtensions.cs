@@ -1,12 +1,12 @@
-﻿using AasanApis.Services;
-using AastanApis.Data.Repositories;
-using AastanApis.Models;
+﻿using AasanApis.Data.Repositories;
+using AasanApis.Models;
+using AasanApis.Services;
 using Serilog;
 using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
 using System.Reflection;
 
-namespace AastanApis.Infrastructure.Extension
+namespace AasanApis.Infrastructure.Extension
 {
     public static class ServiceExtensions
     {
@@ -41,7 +41,7 @@ namespace AastanApis.Infrastructure.Extension
             services.Configure<AastanOptions>(configuration.GetSection(AastanOptions.SectionName));
             services.AddScoped<IAastanClient, AastanClient>();
             services.AddScoped<IAastanService, AastanService>();
-            services.AddScoped<IAastanRepository, IAastanRepository>();
+            services.AddScoped<IAastanRepository, AastanRepository>();
             services.AddScoped<IBaseRepository, BaseRepository>();
             services.AddScoped<BaseLog>();
             return services;

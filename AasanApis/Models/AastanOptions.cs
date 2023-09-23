@@ -1,6 +1,6 @@
-﻿namespace AastanApis.Models
+﻿namespace AasanApis.Models
 {
-    public class AastanOptions
+    public sealed class AastanOptions
     {
         public const string SectionName = "Aastan";
 
@@ -9,6 +9,7 @@
         public string MachingServiceAddress { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
+        public string Authorization { get; set; }
 
 
     }

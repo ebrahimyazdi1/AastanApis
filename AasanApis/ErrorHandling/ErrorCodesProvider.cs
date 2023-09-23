@@ -1,4 +1,4 @@
-﻿namespace AastanApis.ErrorHandling
+﻿namespace AasanApis.ErrorHandling
 {
     public class ErrorCodesProvider
     {

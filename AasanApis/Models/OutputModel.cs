@@ -1,4 +1,4 @@
-﻿namespace AastanApis.Models
+﻿namespace AasanApis.Models
 {
     public class OutputModel
     {

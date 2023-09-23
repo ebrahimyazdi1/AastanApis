@@ -1,15 +1,15 @@
-﻿using AastanApis.Data.Repositories;
-using AastanApis.ErrorHandling;
-using AastanApis.Exceptions;
-using AastanApis.Infrastructure.Extension;
-using AastanApis.Models;
+﻿using AasanApis.Data.Repositories;
+using AasanApis.ErrorHandling;
+using AasanApis.Exceptions;
+using AasanApis.Infrastructure.Extension;
+using AasanApis.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Extensions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 
-namespace AastanApis.Infrastructure
+namespace AasanApis.Infrastructure
 {
     public class BaseLog
     {
@@ -21,8 +21,7 @@ namespace AastanApis.Infrastructure
 
         private readonly HttpClient _httpClient;
 
-        public BaseLog(IAastanRepository repository,
-            ILogger<BaseLog> logger, IOptions<AastanOptions> options
+        public BaseLog(IAastanRepository repository,ILogger<BaseLog> logger, IOptions<AastanOptions> options
                 , HttpClient httpClient, IBaseRepository baseRepository)
         {
             _repository = repository;
@@ -47,7 +46,7 @@ namespace AastanApis.Infrastructure
                 RequestId, codeProvider?.SafeReponseCode.ToString()));
             return ServiceHelperExtension.GenerateApiErrorResponse<ErrorResult>(codeProvider);
         }
-        public async Task<TResponse> TransferSendAsync<TRequest, TResponse>(string uriString, HttpMethod method, TRequest request, string token,
+        public async Task<TResponse> TransferSendAsync<TRequest, TResponse>(string uriString, HttpMethod method, TRequest request,
         [CallerMemberName] string callerMethodName = null) where TResponse : ErrorResult, new() where TRequest : class
         {
             {
@@ -56,13 +55,13 @@ namespace AastanApis.Infrastructure
                 var requestHttpMessage = new HttpRequestMessage(method, uriString);
                 //var token = await _baseRepository.FindAccessToken().ConfigureAwait(false);
 
-                if (token is null)
-                {
-                    _logger.LogError($"token is null in the FindAccessToken method ->{ErrorCode.NotFound.GetDisplayName()}");
-                    throw new RamzNegarException(ErrorCode.TokenNotFound,
-                                  ErrorCode.AastanApiError.GetDisplayName());
-                }
-                requestHttpMessage.AddFaraboomCommonHeader(_options, token);
+                //if (token is null)
+                //{
+                //    _logger.LogError($"token is null in the FindAccessToken method ->{ErrorCode.NotFound.GetDisplayName()}");
+                //    throw new RamzNegarException(ErrorCode.TokenNotFound,
+                //                  ErrorCode.AastanApiError.GetDisplayName());
+                //}
+                requestHttpMessage.AddTokenHeader(_options);
 
                 if (method == HttpMethod.Post && request != null)
                 {

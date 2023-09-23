@@ -1,6 +1,6 @@
-﻿namespace AastanApis.Data.Entities
+﻿namespace AasanApis.Data.Entities
 {
-    public class AastanResLog :BaseEntity<string>
+    public sealed class AastanResLog :BaseEntity<string>
     {
         public string ResCode { get; set; }
         public string HTTPStatusCode { get; set; }

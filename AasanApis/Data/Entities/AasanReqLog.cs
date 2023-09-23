@@ -1,6 +1,6 @@
-﻿namespace AastanApis.Data.Entities
+﻿namespace AasanApis.Data.Entities
 {
-    public class AastanReqLog : BaseEntity<String>
+    public sealed class AastanReqLog : BaseEntity<String>
     {
         public AastanReqLog()
         {

@@ -1,7 +1,7 @@
-﻿using AastanApis.Data;
-using AastanApis.Infrastructure.Extension;
+﻿using AasanApis.Data;
+using AasanApis.Infrastructure.Extension;
+using AasanApis.Services;
 using Microsoft.EntityFrameworkCore;
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllers();
@@ -10,7 +10,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.ConfigureLogging(builder.Configuration, builder.Environment);
 builder.Services.AddDbContext<AastanDbContext>(opt => opt.UseOracle
     (builder.Configuration["ConnectionStrings:AastanConnection"]));
-//builder.Services.AddHttpClient<ISatnaTransferClient, SatnaTransferClient>();
+builder.Services.AddHttpClient<IAastanClient, AastanClient>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAastanServices(builder.Configuration);
 var app = builder.Build();

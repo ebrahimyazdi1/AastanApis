@@ -1,10 +1,10 @@
-﻿using AastanApis.Data.Entities;
-using AastanApis.ErrorHandling;
-using AastanApis.Exceptions;
+﻿using AasanApis.Data.Entities;
+using AasanApis.ErrorHandling;
+using AasanApis.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Extensions;
 
-namespace AastanApis.Data.Repositories
+namespace AasanApis.Data.Repositories
 {
     public class BaseRepository :IBaseRepository
     {

@@ -1,5 +1,4 @@
-﻿using AastanApis.Models;
-using System.Text.Json.Serialization;
+﻿
 
 namespace AasanApis.Models
 {

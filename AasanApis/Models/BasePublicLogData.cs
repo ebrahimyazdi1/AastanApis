@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace AastanApis.Models
+namespace AasanApis.Models
 {
     public record BasePublicLogData
     {

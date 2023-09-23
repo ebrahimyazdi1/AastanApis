@@ -1,4 +1,5 @@
-﻿using AastanApis.ErrorHandling;
+﻿
+using AasanApis.ErrorHandling;
 using System.Text.Json.Serialization;
 
 namespace AasanApis.Models
@@ -21,6 +22,6 @@ namespace AasanApis.Models
 
 
         [JsonPropertyName("expiresIn")]
-        public string ExpiresIn { get; set; }
+        public string ExpireTimesInSecond { get; set; }
     }
 }

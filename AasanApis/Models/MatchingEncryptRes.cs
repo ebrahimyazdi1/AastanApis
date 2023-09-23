@@ -1,4 +1,4 @@
-﻿using AastanApis.ErrorHandling;
+﻿using AasanApis.ErrorHandling;
 using System.Text.Json.Serialization;
 
 namespace AasanApis.Models

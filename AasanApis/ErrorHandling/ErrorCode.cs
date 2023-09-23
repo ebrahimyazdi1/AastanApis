@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace AastanApis.ErrorHandling
+namespace AasanApis.ErrorHandling
 {
     public enum ErrorCode
     {

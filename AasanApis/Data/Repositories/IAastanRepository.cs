@@ -1,6 +1,7 @@
-﻿using AastanApis.Models;
+﻿using AasanApis.Models;
 
-namespace AastanApis.Data.Repositories
+
+namespace AasanApis.Data.Repositories
 {
     public interface IAastanRepository
     {
