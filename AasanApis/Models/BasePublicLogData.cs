@@ -11,7 +11,7 @@ namespace AasanApis.Models
         }
     }
 
-    public class PublicLogData
+    public record PublicLogData
     {
         public string UserId { get; set; }
         public string PublicAppId { get; set; }

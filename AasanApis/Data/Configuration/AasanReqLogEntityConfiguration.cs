@@ -8,7 +8,6 @@ namespace AastanApis.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<AastanReqLog> builder)
         {
-
             builder.ToTable("Aastan_LOG_REQ");
             builder.HasKey(entity => entity.Id);
             builder.HasIndex(entity => entity.Id).IsUnique(true);
@@ -19,6 +18,7 @@ namespace AastanApis.Data.Configuration
             builder.Property(entity => entity.LogDateTime).IsRequired();
             builder.Property(entity => entity.PublicAppId).IsRequired();
             builder.Property(entity => entity.JsonReq).IsRequired();
+          
         }
     }
 }

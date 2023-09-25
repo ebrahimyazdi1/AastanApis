@@ -6,8 +6,8 @@ namespace AasanApis.Data
 {
     public class AastanDbContext : DbContext
     {
-        public DbSet<AastanReqLog> SatnaReqLogs { get; set; }
-        public DbSet<AastanResLog> SatnaResLogs { get; set; }
+        public DbSet<AastanReqLog> AastanReqLogs { get; set; }
+        public DbSet<AastanResLog> AastanResLogs { get; set; }
         public DbSet<AccessTokenEntity> AccessTokens { get; set; }
         public AastanDbContext(DbContextOptions<AastanDbContext> dbContext) : base(dbContext)
         {

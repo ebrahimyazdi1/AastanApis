@@ -1,10 +1,13 @@
 ﻿using AasanApis.Data.Repositories;
 using AasanApis.Models;
 using AasanApis.Services;
+using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
+using System.Net.Http.Headers;
 using System.Reflection;
+using System.Text;
 
 namespace AasanApis.Infrastructure.Extension
 {
@@ -39,7 +42,27 @@ namespace AasanApis.Infrastructure.Extension
              IConfiguration configuration)
         {
             services.Configure<AastanOptions>(configuration.GetSection(AastanOptions.SectionName));
-            services.AddScoped<IAastanClient, AastanClient>();
+            //services.AddHttpClient<IAastanClient, AastanClient>((sp, client) =>
+            //{
+            //    try
+            //    {
+
+
+            //        var options = sp.GetRequiredService<IOptions<AastanOptions>>().Value;
+            //        client.BaseAddress = new Uri(options.BaseAddress, UriKind.RelativeOrAbsolute);
+            //        var authenticationParam =
+            //            Convert.ToBase64String(
+            //                Encoding.ASCII.GetBytes($"{options.UserName}:{options.Password}"));
+            //        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authenticationParam);
+            //    }
+            //    catch (Exception e)
+            //    {
+
+            //        throw;
+            //    }
+
+            //});
+            //services.AddScoped<IAastanClient, AastanClient>();
             services.AddScoped<IAastanService, AastanService>();
             services.AddScoped<IAastanRepository, AastanRepository>();
             services.AddScoped<IBaseRepository, BaseRepository>();

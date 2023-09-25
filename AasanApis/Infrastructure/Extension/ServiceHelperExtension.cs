@@ -3,6 +3,8 @@ using System.Text.Json;
 using Microsoft.OpenApi.Extensions;
 using AasanApis.Models;
 using AasanApis.ErrorHandling;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace AasanApis.Infrastructure.Extension
 {
@@ -18,16 +20,15 @@ namespace AasanApis.Infrastructure.Extension
             ReadCommentHandling = JsonCommentHandling.Skip,
             IgnoreNullValues = true
         };
-        public static void AddCommonHeader(this HttpRequestMessage request)
-        {
-            request.Headers.Add("Accept", "application/json");
-        }
         public static void AddTokenHeader(this HttpRequestMessage request, AastanOptions options)
         {
-         
+
             request.Headers.Add("Accept-Language", "fa");
             request.Headers.Add("Accept", "application/json");
-            request.Headers.Add("Authorization", "Basic " + options.Authorization);
+            //var authenticationParam =
+            //    Convert.ToBase64String(
+            //        Encoding.ASCII.GetBytes($"{options.UserName}:{options.Password}"));
+            //request.Headers.Authorization = new AuthenticationHeaderValue("Basic", authenticationParam);
         }
         public static void AddFaraboomCommonHeader(this HttpRequestMessage request, AastanOptions options, string token)
         {

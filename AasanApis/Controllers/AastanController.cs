@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AasanApis.Controllers
 {
     [ApiExplorerSettings]
-    [ApiVersion("v1")]
+    [ApiVersion("1")]
     [Route("Shahkar/v1/[controller]")]
     [ApiController]
     [ApiResultFilter]
@@ -19,10 +19,11 @@ namespace AasanApis.Controllers
         private readonly ILogger<AastanController> _logger;
         private BaseLog _baseLog { get; }
         private IAastanService _astanService { get; }
-        public AastanController(ILogger<AastanController> logger, BaseLog baseLog)
+        public AastanController(ILogger<AastanController> logger, BaseLog baseLog, IAastanService astanService)
         {
             _logger = logger;
             _baseLog = baseLog;
+            _astanService = astanService;
         }
 
         [AllowAnonymous]
@@ -30,7 +31,7 @@ namespace AasanApis.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenResDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(TokenResDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(TokenResDTO))]
-        public async Task<ActionResult<TokenResDTO>> AastanGetToken(BasePublicLogData basePublicLog)
+        public async Task<ActionResult<TokenResDTO>> AastanGetToken(BasicDataReq basePublicLog)
         {
             var result = await _astanService.GetTokenAsync(basePublicLog);
             try
@@ -38,7 +39,7 @@ namespace AasanApis.Controllers
                 if (result.StatusCode != "OK")
                 {
                     _logger.LogError($"{nameof(AastanGetToken)} not-success request - input \r\n response:{result.StatusCode}-{result.Content}");
-                    return BadRequest(_baseLog.ApiResponeFailByCodeProvider<BasePublicLogData>(result.Content, result.StatusCode, result.RequestId, basePublicLog?.PublicLogData?.PublicReqId));
+                    return BadRequest(_baseLog.ApiResponeFailByCodeProvider<BasicDataReq>(result.Content, result.StatusCode, result.RequestId, basePublicLog?.PublicLogData?.PublicReqId));
                 }
                 return Ok(_baseLog.ApiResponseSuccessByCodeProvider<TokenResDTO>(result?.Content, result.StatusCode, result?.RequestId, basePublicLog?.PublicLogData?.PublicReqId));
             }
@@ -53,9 +54,9 @@ namespace AasanApis.Controllers
 
         [AllowAnonymous]
         [HttpPost("refresh-token")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenResDTO))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(TokenResDTO))]
-        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(TokenResDTO))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RefreshTokenResDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(RefreshTokenResDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(RefreshTokenResDTO))]
         public async Task<ActionResult<RefreshTokenResDTO>> AastanGetRefreshToken(RefreshTokenReqDTO refreshTokenReq)
         {
             var result = await _astanService.GetRefreshTokenAsync(refreshTokenReq);

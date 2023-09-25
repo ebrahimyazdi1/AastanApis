@@ -3,6 +3,7 @@ using AasanApis.Exceptions;
 using AasanApis.Infrastructure;
 using AasanApis.Infrastructure.Extension;
 using AasanApis.Models;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Extensions;
 using System.Text.Json;
 
@@ -20,12 +21,11 @@ namespace AasanApis.Services
         
         private readonly BaseLog _baseLog;
         public AastanClient(ILogger<AastanClient> logger,
-            HttpClient httpClient, IAastanClient astanClient, AastanOptions astanOptions)
+            HttpClient httpClient, IOptions<AastanOptions> astanOptions)
         {
             _logger = logger;
             _httpClient = httpClient;
-            _astanClient = astanClient;
-            _astanOptions = astanOptions;
+            _astanOptions = astanOptions.Value;
         }
         public async Task<MatchingEncryptRes> GetMatchingEncryptedAsync(MatchingEncryptReq matchingEncryptReq)
         {

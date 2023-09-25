@@ -15,7 +15,7 @@ namespace AasanApis.Models
         public List<ResultStatus> Status { get; set; }
 
         [JsonPropertyName("result.status.statusCode")]
-        public int StatusCode { get; set; }
+        public int ApiStatusCode { get; set; }
     }
 
     public class Data

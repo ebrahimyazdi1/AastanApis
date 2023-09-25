@@ -11,7 +11,7 @@ namespace AastanApis.Data.Configuration
         {
             builder.ToTable("Aastan_LOG_RES");
             builder.HasKey(entity => entity.Id);
-            builder.HasIndex(entity => entity.Id).IsUnique(true);
+            //builder.HasIndex(entity => entity.Id).IsUnique(true);
             builder.HasIndex(entity => entity.ReqLogId).IsUnique(true);
             builder.Property(entity => entity.Id).ValueGeneratedOnAdd();
             builder.Property(entity => entity.ResCode).IsRequired();
@@ -19,7 +19,7 @@ namespace AastanApis.Data.Configuration
             builder.Property(entity => entity.HTTPStatusCode).IsRequired();
             builder.Property(entity => entity.ReqLogId).IsRequired();
             builder.Property(entity => entity.JsonRes).IsRequired();
-            builder.HasOne(entity => entity.PayaReqLog).WithMany(entity => entity.AastanResLogs)
+            builder.HasOne(entity => entity.ReqLog).WithMany(entity => entity.AastanResLogs)
                 .HasForeignKey(p => p.ReqLogId);
         }
     }

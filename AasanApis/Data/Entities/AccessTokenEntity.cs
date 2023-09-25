@@ -1,4 +1,6 @@
-﻿namespace AasanApis.Data.Entities
+﻿using System.Text.Json;
+
+namespace AasanApis.Data.Entities
 {
     public sealed class AccessTokenEntity
     {
@@ -9,7 +11,7 @@
 
         public override string ToString()
         {
-            return base.ToString();
+            return JsonSerializer.Serialize(this);
         }
     }
 }

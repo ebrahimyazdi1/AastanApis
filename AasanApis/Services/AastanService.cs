@@ -34,9 +34,9 @@ namespace AasanApis.Services
             try
             {
                 _logger.LogInformation($"{nameof(GetTokenAsync)} request sent - input is : \r\n {basePublicLog}");
-                AastanRequestLogDTO aastanRequest=new AastanRequestLogDTO(basePublicLog.PublicLogData?.PublicReqId, basePublicLog.ToString(),
+                AastanRequestLogDTO astanRequest=new AastanRequestLogDTO(basePublicLog.PublicLogData?.PublicReqId, basePublicLog.ToString(),
                     basePublicLog.PublicLogData?.UserId, basePublicLog.PublicLogData?.PublicAppId, basePublicLog.PublicLogData?.ServiceId);
-                string requestId = await _repository.InsertAastanRequestLog(aastanRequest);
+                string requestId = await _repository.InsertAastanRequestLog(astanRequest);
                 var tokenResult = await _client.GetTokenAsync();
                 if (tokenResult != null && tokenResult.IsSuccess)
                 {
@@ -57,16 +57,64 @@ namespace AasanApis.Services
                     $"Exception occurred while: {nameof(GetTokenAsync)} => {ErrorCode.AastanApiError.GetDisplayName()}");
             }
         }
-        public Task<OutputModel> GetMatchingEncryptedAsync(MatchingEncryptReqDTO matchingEncryptReq)
+        public async Task<OutputModel> GetRefreshTokenAsync(RefreshTokenReqDTO refreshTokenReqDTO)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation($"{nameof(GetRefreshTokenAsync)} request sent - input is : \r\n {refreshTokenReqDTO}");
+                AastanRequestLogDTO astanRequest = new AastanRequestLogDTO(refreshTokenReqDTO.PublicLogData?.PublicReqId, refreshTokenReqDTO.ToString(),
+                    refreshTokenReqDTO.PublicLogData?.UserId, refreshTokenReqDTO.PublicLogData?.PublicAppId, refreshTokenReqDTO.PublicLogData?.ServiceId);
+                string requestId = await _repository.InsertAastanRequestLog(astanRequest);
+               var mappedRefreshToken= _mapper.Map<RefreshTokenReq>(refreshTokenReqDTO);
+                var tokenResult = await _client.GetRefreshTokenAsync(mappedRefreshToken);
+                //if (tokenResult != null && tokenResult.IsSuccess)
+                //{
+                //    _ = await _baseRepository.AddOrUpdateTokenAsync(tokenResult?.AccessToken);
+                //}
+                var tokenOutput = _mapper.Map<RefreshTokenResDTO>(tokenResult);
+                return new OutputModel
+                {
+                    Content = JsonSerializer.Serialize(tokenOutput),
+                    RequestId = requestId,
+                    StatusCode = tokenResult?.StatusCode,
+                };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Exception occurred while {nameof(GetRefreshTokenAsync)}");
+                throw new RamzNegarException(ErrorCode.AastanApiError,
+                    $"Exception occurred while: {nameof(GetRefreshTokenAsync)} => {ErrorCode.AastanApiError.GetDisplayName()}");
+            }
         }
 
-        public Task<OutputModel> GetRefreshTokenAsync(RefreshTokenReqDTO refreshTokenReq)
+        public async Task<OutputModel> GetMatchingEncryptedAsync(MatchingEncryptReqDTO matchingEncryptReqDTO)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation($"{nameof(GetMatchingEncryptedAsync)} request sent - input is : \r\n {matchingEncryptReqDTO}");
+                AastanRequestLogDTO astanRequest = new AastanRequestLogDTO(matchingEncryptReqDTO.PublicLogData?.PublicReqId, matchingEncryptReqDTO.ToString(),
+                    matchingEncryptReqDTO.PublicLogData?.UserId, matchingEncryptReqDTO.PublicLogData?.PublicAppId, matchingEncryptReqDTO.PublicLogData?.ServiceId);
+                string requestId = await _repository.InsertAastanRequestLog(astanRequest);
+                var mappedMatching = _mapper.Map<MatchingEncryptReq>(matchingEncryptReqDTO);
+                var tokenResult = await _client.GetMatchingEncryptedAsync(mappedMatching);
+                //if (tokenResult != null && tokenResult.IsSuccess)
+                //{
+                //    _ = await _baseRepository.AddOrUpdateTokenAsync(tokenResult?.AccessToken);
+                //}
+                var tokenOutput = _mapper.Map<RefreshTokenResDTO>(tokenResult);
+                return new OutputModel
+                {
+                    Content = JsonSerializer.Serialize(tokenOutput),
+                    RequestId = requestId,
+                    StatusCode = tokenResult?.StatusCode,
+                };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Exception occurred while {nameof(GetMatchingEncryptedAsync)}");
+                throw new RamzNegarException(ErrorCode.AastanApiError,
+                    $"Exception occurred while: {nameof(GetMatchingEncryptedAsync)} => {ErrorCode.AastanApiError.GetDisplayName()}");
+            }
         }
-
-
     }
 }

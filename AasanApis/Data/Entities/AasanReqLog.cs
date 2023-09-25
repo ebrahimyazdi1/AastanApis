@@ -1,4 +1,6 @@
-﻿namespace AasanApis.Data.Entities
+﻿using System.Text.Json;
+
+namespace AasanApis.Data.Entities
 {
     public sealed class AastanReqLog : BaseEntity<String>
     {
@@ -15,6 +17,9 @@
         public string PublicReqId { get; set; }
 
         public ICollection<AastanResLog> AastanResLogs { get; set; }
-
+        public override string ToString()
+        {
+            return JsonSerializer.Serialize(this);
+        }
     }
 }
