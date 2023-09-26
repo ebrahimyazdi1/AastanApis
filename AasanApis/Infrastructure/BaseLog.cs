@@ -14,26 +14,22 @@ namespace AasanApis.Infrastructure
     public class BaseLog
     {
         public IAastanRepository _repository { get; }
-        public IBaseRepository _baseRepository { get; }
-
         private ILogger<BaseLog> _logger { get; }
         private AastanOptions _options { get; }
 
         private readonly HttpClient _httpClient;
 
-        public BaseLog(IAastanRepository repository,ILogger<BaseLog> logger, IOptions<AastanOptions> options
-                , HttpClient httpClient, IBaseRepository baseRepository)
+        public BaseLog(IAastanRepository repository, ILogger<BaseLog> logger, IOptions<AastanOptions> options
+                , HttpClient httpClient)
         {
             _repository = repository;
             _logger = logger;
             _options = options.Value;
             _httpClient = httpClient;
-            _baseRepository = baseRepository;
         }
         public T ApiResponseSuccessByCodeProvider<T>(string response, string statusCode, string RequestId, string publicReqId) where T : new()
         {
             _repository.InsertAastanResponseLog(new AastanResponseLogDTO(publicReqId, Convert.ToString(response), statusCode, RequestId, statusCode));
-
             var responseResult = JsonSerializer.Deserialize<T>(response);
             return responseResult;
         }
@@ -43,7 +39,7 @@ namespace AasanApis.Infrastructure
             codeProvider = codeProvider.errorCodesResponseResult(statusCode.ToString());
             _repository.InsertAastanResponseLog(new AastanResponseLogDTO
                 (publicReqId, Convert.ToString(response), codeProvider?.OutReponseCode.ToString(),
-                RequestId, codeProvider?.SafeReponseCode.ToString()));
+                         RequestId, codeProvider?.SafeReponseCode.ToString()));
             return ServiceHelperExtension.GenerateApiErrorResponse<ErrorResult>(codeProvider);
         }
         public async Task<TResponse> TransferSendAsync<TRequest, TResponse>(string uriString, HttpMethod method, TRequest request,
@@ -70,7 +66,6 @@ namespace AasanApis.Infrastructure
                             JsonSerializer.Serialize(request, ServiceHelperExtension.JsonSerializerOptions),
                     Encoding.UTF8, "application/json");
                 }
-
                 HttpResponseMessage httpResponseMessage;
                 try
                 {
@@ -89,7 +84,6 @@ namespace AasanApis.Infrastructure
                     throw new RamzNegarException(ErrorCode.AastanApiError,
                                   ErrorCode.AastanApiError.GetDisplayName());
                 }
-
                 var responseContent = await (httpResponseMessage?.Content?.ReadAsStringAsync())
                     .ConfigureAwait(false);
 

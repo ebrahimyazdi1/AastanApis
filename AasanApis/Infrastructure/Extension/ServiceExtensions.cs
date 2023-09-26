@@ -65,7 +65,6 @@ namespace AasanApis.Infrastructure.Extension
             //services.AddScoped<IAastanClient, AastanClient>();
             services.AddScoped<IAastanService, AastanService>();
             services.AddScoped<IAastanRepository, AastanRepository>();
-            services.AddScoped<IBaseRepository, BaseRepository>();
             services.AddScoped<BaseLog>();
             return services;
         }

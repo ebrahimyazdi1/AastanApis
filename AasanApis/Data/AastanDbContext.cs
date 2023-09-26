@@ -1,5 +1,6 @@
 ﻿
 using AasanApis.Data.Entities;
+using AasanApis.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AasanApis.Data
@@ -9,6 +10,7 @@ namespace AasanApis.Data
         public DbSet<AastanReqLog> AastanReqLogs { get; set; }
         public DbSet<AastanResLog> AastanResLogs { get; set; }
         public DbSet<AccessTokenEntity> AccessTokens { get; set; }
+        public DbSet<ShahkarRequestsLogEntity> ShahkarRequestsLog { get; set; }
         public AastanDbContext(DbContextOptions<AastanDbContext> dbContext) : base(dbContext)
         {
 

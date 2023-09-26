@@ -25,10 +25,6 @@ builder.Services.AddHttpClient<IAastanClient, AastanClient>((sp, client) =>
     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authenticationParam);
 
 });
-//builder.Services.AddHttpClient<IAastanClient, AastanClient>();
-
-
-
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAastanServices(builder.Configuration);

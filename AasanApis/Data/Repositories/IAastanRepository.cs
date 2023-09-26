@@ -1,4 +1,5 @@
-﻿using AasanApis.Models;
+﻿using AasanApis.Data.Entities;
+using AasanApis.Models;
 
 
 namespace AasanApis.Data.Repositories
@@ -7,5 +8,8 @@ namespace AasanApis.Data.Repositories
     {
         Task<string> InsertAastanResponseLog(AastanResponseLogDTO satnaResponseLogDTO);
         Task<string> InsertAastanRequestLog(AastanRequestLogDTO satnaRequestLog);
+        Task AddOrUpdateTokenAsync(string? accessToken);
+        Task InsertShahkarRequestsLog(ShahkarRequestsLogDTO shahkarRequestsLogDTO);
+        Task UpdateShahkarRequestsLog(UpdateShahkarRequestsLogDTO updateShahkarRequests);
     }
 }

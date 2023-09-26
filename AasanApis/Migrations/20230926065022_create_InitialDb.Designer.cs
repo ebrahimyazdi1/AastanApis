@@ -12,8 +12,8 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace AasanApis.Migrations
 {
     [DbContext(typeof(AastanDbContext))]
-    [Migration("20230925095140_create_Db")]
-    partial class create_Db
+    [Migration("20230926065022_create_InitialDb")]
+    partial class create_InitialDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,9 +55,6 @@ namespace AasanApis.Migrations
                         .HasColumnType("NVARCHAR2(2000)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
 
                     b.ToTable("Aastan_LOG_REQ", (string)null);
                 });
@@ -121,6 +118,45 @@ namespace AasanApis.Migrations
                         .IsUnique();
 
                     b.ToTable("NAJI_ACCESS_TOCKEN", (string)null);
+                });
+
+            modelBuilder.Entity("AasanApis.Data.Entities.ShahkarRequestsLogEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(10)");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccessToken")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("ExpireTimeInSecond")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("RequestId")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("SafeServiceId")
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("Scope")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<string>("TokenType")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Aastan_ShahkarRequestsLog", (string)null);
                 });
 
             modelBuilder.Entity("AasanApis.Data.Entities.AastanResLog", b =>

@@ -23,12 +23,8 @@ namespace AasanApis.Infrastructure.Extension
         public static void AddTokenHeader(this HttpRequestMessage request, AastanOptions options)
         {
 
-            request.Headers.Add("Accept-Language", "fa");
+            //request.Headers.Add("Accept-Language", "fa");
             request.Headers.Add("Accept", "application/json");
-            //var authenticationParam =
-            //    Convert.ToBase64String(
-            //        Encoding.ASCII.GetBytes($"{options.UserName}:{options.Password}"));
-            //request.Headers.Authorization = new AuthenticationHeaderValue("Basic", authenticationParam);
         }
         public static void AddFaraboomCommonHeader(this HttpRequestMessage request, AastanOptions options, string token)
         {
