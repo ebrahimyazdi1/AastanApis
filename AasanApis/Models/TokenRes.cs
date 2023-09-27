@@ -14,10 +14,10 @@ namespace AasanApis.Models
         [JsonPropertyName("scope")]
         public string Scope { get; set; }
 
-        [JsonPropertyName("token_typ")]
+        [JsonPropertyName("token_type")]
         public string TokenType { get; set; }
 
         [JsonPropertyName("expires_in")]
-        public string ExpireTimesInSeond { get; set; }
+        public int ExpireTimesInSecond { get; set; }
     }
 }

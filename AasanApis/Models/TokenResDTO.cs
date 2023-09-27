@@ -8,7 +8,7 @@ namespace AasanApis.Models
         public string RefreshToken { get; set; }
         public string Scope { get; set; }
         public string TokenType { get; set; }
-        public string ExpireTimesInSecond { get; set; }
-        public string RequestId { get; set; }
+        public int ExpireTimesInSecond { get; set; }
+        //public string RequestId { get; set; }
     }
 }

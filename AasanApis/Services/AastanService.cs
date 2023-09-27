@@ -53,11 +53,12 @@ namespace AasanApis.Services
                 ShahkarRequestsLogDTO shahkarEntity = new()
                 {
                     AccessToken = tokenResult?.AccessToken,
-                    ExpireTimeInSecond = tokenResult?.ExpireTimesInSeond,
+                    ExpireTimeInSecond = tokenResult.ExpireTimesInSecond,
                     RefreshToken = tokenResult?.RefreshToken,
-                    SafeServiceId = basePublicLog.PublicLogData.ServiceId,
+                    SafeServiceId = basePublicLog.PublicLogData.ServiceId ?? Guid.NewGuid().ToString(),
                     Scope = tokenResult?.Scope,
                     TokenType = tokenResult?.TokenType
+                    
 
 
                 };

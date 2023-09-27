@@ -40,7 +40,8 @@ namespace AasanApis.Migrations
                     TokenType = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
                     ExpireTimeInSecond = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
                     RequestId = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
-                    SafeServiceId = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true)
+                    SafeServiceId = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true),
+                    ErrorMessage = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -89,11 +90,11 @@ namespace AasanApis.Migrations
                 column: "ReqLogId",
                 unique: true);
 
-            migrationBuilder.CreateIndex(
-                name: "IX_NAJI_ACCESS_TOCKEN_Id",
-                table: "NAJI_ACCESS_TOCKEN",
-                column: "Id",
-                unique: true);
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_NAJI_ACCESS_TOCKEN_Id",
+            //    table: "NAJI_ACCESS_TOCKEN",
+            //    column: "Id",
+            //    unique: true);
         }
 
         /// <inheritdoc />

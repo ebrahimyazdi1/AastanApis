@@ -12,8 +12,8 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace AasanApis.Migrations
 {
     [DbContext(typeof(AastanDbContext))]
-    [Migration("20230926065022_create_InitialDb")]
-    partial class create_InitialDb
+    [Migration("20230927125327_update_shahkarRequetLogs")]
+    partial class update_shahkarRequetLogs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -132,15 +132,18 @@ namespace AasanApis.Migrations
                         .IsRequired()
                         .HasColumnType("NVARCHAR2(2000)");
 
+                    b.Property<string>("ErrorMessage")
+                        .HasColumnType("NVARCHAR2(2000)");
+
                     b.Property<string>("ExpireTimeInSecond")
                         .IsRequired()
                         .HasColumnType("NVARCHAR2(2000)");
 
                     b.Property<string>("RefreshToken")
+                        .IsRequired()
                         .HasColumnType("NVARCHAR2(2000)");
 
                     b.Property<string>("RequestId")
-                        .IsRequired()
                         .HasColumnType("NVARCHAR2(2000)");
 
                     b.Property<string>("SafeServiceId")

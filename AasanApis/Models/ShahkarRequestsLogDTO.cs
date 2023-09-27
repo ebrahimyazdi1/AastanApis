@@ -7,8 +7,8 @@
         public string RefreshToken { get; set; }
         public string Scope { get; set; }
         public string TokenType { get; set; }
-        public string ExpireTimeInSecond { get; set; }
-        public string RequestId { get; set; }
-        public string SafeServiceId { get; set; }
+        public int? ExpireTimeInSecond { get; set; }
+        public string? RequestId { get; set; }
+        public string? SafeServiceId { get; set; }
     }
 }

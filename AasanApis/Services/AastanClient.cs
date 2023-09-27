@@ -12,20 +12,17 @@ namespace AasanApis.Services
     public class AastanClient : IAastanClient
     {
         private readonly ILogger<AastanClient> _logger;
-        
+
         private readonly HttpClient _httpClient;
-
-        private readonly IAastanClient _astanClient;
-
-        private readonly AastanOptions _astanOptions;
-        
         private readonly BaseLog _baseLog;
+        private readonly AastanOptions _astanOptions;
         public AastanClient(ILogger<AastanClient> logger,
-            HttpClient httpClient, IOptions<AastanOptions> astanOptions)
+            HttpClient httpClient, IOptions<AastanOptions> astanOptions, BaseLog baseLog)
         {
             _logger = logger;
             _httpClient = httpClient;
             _astanOptions = astanOptions.Value;
+            _baseLog = baseLog;
         }
         public async Task<MatchingEncryptRes> GetMatchingEncryptedAsync(MatchingEncryptReq matchingEncryptReq)
         {
@@ -48,12 +45,15 @@ namespace AasanApis.Services
             {
                 var loginUri = new Uri(_astanOptions.TokenAddress, UriKind.RelativeOrAbsolute);
                 var request = new HttpRequestMessage(HttpMethod.Post, loginUri);
-                request.AddTokenHeader(_astanOptions);
-                request.Content = ServiceHelperExtension.LoginFormUrlEncodedContent(_astanOptions);
                 _logger.LogInformation($"{nameof(GetTokenAsync)} - request is: \r\n {JsonSerializer.Serialize(request)}");
                 var response = await _httpClient.SendAsync(request)
                     .ConfigureAwait(false);
                 var responseBodyJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation($"{nameof(GetTokenAsync)} -> the reason is {responseBodyJson}");
+                    return ServiceHelperExtension.GenerateErrorMethodResponse<TokenRes>(ErrorCode.AastanApiError);
+                }
                 var tokenOutput =
                     JsonSerializer.Deserialize<TokenRes>(responseBodyJson,
                         ServiceHelperExtension.JsonSerializerOptions);
@@ -65,11 +65,13 @@ namespace AasanApis.Services
                 return new TokenRes()
                 {
                     AccessToken = tokenOutput?.AccessToken ?? "",
-                    ExpireTimesInSeond = tokenOutput.ExpireTimesInSeond,
+                    ExpireTimesInSecond = tokenOutput.ExpireTimesInSecond,
                     IsSuccess = response.IsSuccessStatusCode,
                     StatusCode = response.StatusCode.ToString(),
                     RefreshToken = tokenOutput.RefreshToken ?? "",
-                    ResultMessage = responseBodyJson
+                    ResultMessage = responseBodyJson,
+                    Scope = tokenOutput.Scope,
+                    TokenType = tokenOutput.TokenType
 
                 };
             }

@@ -42,7 +42,7 @@ namespace AasanApis.Infrastructure
                          RequestId, codeProvider?.SafeReponseCode.ToString()));
             return ServiceHelperExtension.GenerateApiErrorResponse<ErrorResult>(codeProvider);
         }
-        public async Task<TResponse> TransferSendAsync<TRequest, TResponse>(string uriString, HttpMethod method, TRequest request,
+        public async Task<TResponse> TransferSendAsync<TRequest, TResponse>(string uriString, HttpMethod method, TRequest request, 
         [CallerMemberName] string callerMethodName = null) where TResponse : ErrorResult, new() where TRequest : class
         {
             {
