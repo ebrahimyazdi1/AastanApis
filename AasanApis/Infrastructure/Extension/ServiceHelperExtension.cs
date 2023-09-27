@@ -26,11 +26,11 @@ namespace AasanApis.Infrastructure.Extension
             //request.Headers.Add("Accept-Language", "fa");
             request.Headers.Add("Accept", "application/json");
         }
-        public static void AddFaraboomCommonHeader(this HttpRequestMessage request, AastanOptions options, string token)
+        public static void AddAastanCommonHeader(this HttpRequestMessage request, AastanOptions options, string token)
         {
             //request.Headers.Add("Device-Id", options.DeviceId);
             //request.Headers.Add("App-Key", options.AppKey);
-            //request.Headers.Add("Token-Id", options.TokenId);
+            request.Headers.Add("Token", token);
             //request.Headers.Add("Client-Ip-Address", "127.0.0.1");
             //request.Headers.Add("Client-Platform-Type", "WEB");
             //request.Headers.Add("Client-Device-Id", options.DeviceId);
