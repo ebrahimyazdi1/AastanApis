@@ -18,10 +18,11 @@ namespace AasanApis.Data.Configuration
             builder.Property(entity => entity.TokenType).IsRequired();
             builder.Property(entity => entity.AccessToken).IsRequired();
             builder.Property(entity => entity.ExpireTimeInSecond).IsRequired();
+            builder.Property(entity => entity.ExpirationDateTime).IsRequired();
             builder.Property(entity => entity.RefreshToken).IsRequired();
             builder.Property(entity => entity.SafeServiceId).IsRequired(false);
             builder.Property(entity => entity.ErrorMessage).IsRequired(false);
-
+            builder.Property(entity => entity.CreateDate).IsRequired();
         }
     }
 }

@@ -11,5 +11,9 @@ namespace AasanApis.Data.Repositories
         Task AddOrUpdateTokenAsync(string? accessToken);
         Task InsertShahkarRequestsLog(ShahkarRequestsLogDTO shahkarRequestsLogDTO);
         Task UpdateShahkarRequestsLog(UpdateShahkarRequestsLogDTO updateShahkarRequests);
+        Task<string> FindRefreshToken();
+        Task<string> FindRefreshTokenById(string accessToken);
+        Task<ShahkarRequestsLogEntity> FindAccessToken();
+        Task<ShahkarRequestsLogEntity> UpdateShahkarRequestLogTokenAsync(TokenRes tokenRes, ShahkarRequestsLogEntity shahkarRequestsLogEntity);
     }
 }

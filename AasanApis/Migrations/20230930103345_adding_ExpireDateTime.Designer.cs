@@ -3,6 +3,7 @@ using System;
 using AasanApis.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Oracle.EntityFrameworkCore.Metadata;
 
@@ -11,9 +12,11 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace AasanApis.Migrations
 {
     [DbContext(typeof(AastanDbContext))]
-    partial class AastanDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230930103345_adding_ExpireDateTime")]
+    partial class adding_ExpireDateTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,8 +141,9 @@ namespace AasanApis.Migrations
                     b.Property<DateTime>("ExpirationDateTime")
                         .HasColumnType("TIMESTAMP(7)");
 
-                    b.Property<long>("ExpireTimeInSecond")
-                        .HasColumnType("NUMBER(19)");
+                    b.Property<string>("ExpireTimeInSecond")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(2000)");
 
                     b.Property<string>("RefreshToken")
                         .IsRequired()

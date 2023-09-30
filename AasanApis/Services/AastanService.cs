@@ -1,4 +1,5 @@
 ﻿
+using AasanApis.Data.Entities;
 using AasanApis.Data.Repositories;
 using AasanApis.ErrorHandling;
 using AasanApis.Exceptions;
@@ -6,6 +7,7 @@ using AasanApis.Infrastructure.Extension;
 using AasanApis.Models;
 using AutoMapper;
 using Microsoft.OpenApi.Extensions;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 using System.Text.Json;
 
 namespace AasanApis.Services
@@ -18,6 +20,8 @@ namespace AasanApis.Services
         //private IBaseRepository _baseRepository { get; set; }
         private IAastanRepository _repository { get; set; }
         private IAastanClient _client { get; set; }
+
+        IHttpContextAccessor httpContextAccessor { get; set; }
 
         public AastanService(IMapper mapper, ILogger<AastanService> logger, IConfiguration config,
            IAastanRepository repository, IAastanClient client)
@@ -57,9 +61,10 @@ namespace AasanApis.Services
                     RefreshToken = tokenResult?.RefreshToken,
                     SafeServiceId = basePublicLog.PublicLogData.ServiceId ?? Guid.NewGuid().ToString(),
                     Scope = tokenResult?.Scope,
-                    TokenType = tokenResult?.TokenType
-                    
-
+                    TokenType = tokenResult?.TokenType,
+                    CreateDate = DateTime.UtcNow,
+                    ExpirationDateTime =
+                            (DateTime.Now.AddSeconds(tokenResult.ExpireTimesInSecond))
 
                 };
                 await _repository.InsertShahkarRequestsLog(shahkarEntity);
@@ -85,8 +90,10 @@ namespace AasanApis.Services
                 AastanRequestLogDTO astanRequest = new AastanRequestLogDTO(refreshTokenReqDTO.PublicLogData?.PublicReqId, refreshTokenReqDTO.ToString(),
                     refreshTokenReqDTO.PublicLogData?.UserId, refreshTokenReqDTO.PublicLogData?.PublicAppId, refreshTokenReqDTO.PublicLogData?.ServiceId);
                 string requestId = await _repository.InsertAastanRequestLog(astanRequest);
-                var mappedRefreshToken = _mapper.Map<RefreshTokenReq>(refreshTokenReqDTO);
-                var tokenResult = await _client.GetRefreshTokenAsync(mappedRefreshToken);
+                var refrehTokenReq = _mapper.Map<RefreshTokenReq>(refreshTokenReqDTO);
+                var refreshToken = await GetRefreshToken();
+                refrehTokenReq.RefreshToken = refreshToken;
+                var tokenResult = await _client.GetRefreshTokenAsync(refrehTokenReq);
                 if (tokenResult is null || !tokenResult.IsSuccess)
                 {
                     _logger.LogError($"the result of calling the RefreshTokenService is not ok {nameof(GetRefreshTokenAsync)}");
@@ -119,7 +126,6 @@ namespace AasanApis.Services
                     $"Exception occurred while: {nameof(GetRefreshTokenAsync)} => {ErrorCode.AastanApiError.GetDisplayName()}");
             }
         }
-
         public async Task<OutputModel> GetMatchingEncryptedAsync(MatchingEncryptReqDTO matchingEncryptReqDTO)
         {
             try
@@ -143,7 +149,7 @@ namespace AasanApis.Services
                 //_ = _repository.UpdateShahkarRequestsLog(updateRequest);
                 //to do I should update and some fields in shahkarEntity in the database
                 var tokenOutput = _mapper.Map<MatchingEncryptResDTO>(tokenResult);
-                
+
                 return new OutputModel
                 {
                     Content = JsonSerializer.Serialize(tokenOutput),
@@ -157,6 +163,18 @@ namespace AasanApis.Services
                 throw new RamzNegarException(ErrorCode.AastanApiError,
                     $"Exception occurred while: {nameof(GetMatchingEncryptedAsync)} => {ErrorCode.AastanApiError.GetDisplayName()}");
             }
+        }
+
+
+        private async Task<String> GetRefreshToken()
+        {
+            var shahkarEntity = await _repository.FindAccessToken().ConfigureAwait(false);
+            if (shahkarEntity is not null) return shahkarEntity.AccessToken;
+
+            //Cause of nothing token find in shahkarLog have to call getToken service.
+            var loginResponse = await _client.GetTokenAsync().ConfigureAwait(false);
+            await _repository.UpdateShahkarRequestLogTokenAsync(loginResponse, shahkarEntity);
+            return loginResponse.RefreshToken;
         }
     }
 }

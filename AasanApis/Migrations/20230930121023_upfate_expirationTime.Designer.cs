@@ -3,6 +3,7 @@ using System;
 using AasanApis.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Oracle.EntityFrameworkCore.Metadata;
 
@@ -11,9 +12,11 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace AasanApis.Migrations
 {
     [DbContext(typeof(AastanDbContext))]
-    partial class AastanDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230930121023_upfate_expirationTime")]
+    partial class upfate_expirationTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

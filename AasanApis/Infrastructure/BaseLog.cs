@@ -42,28 +42,35 @@ namespace AasanApis.Infrastructure
                          RequestId, codeProvider?.SafeReponseCode.ToString()));
             return ServiceHelperExtension.GenerateApiErrorResponse<ErrorResult>(codeProvider);
         }
-        public async Task<TResponse> TransferSendAsync<TRequest, TResponse>(string uriString, HttpMethod method, TRequest request, 
-        [CallerMemberName] string callerMethodName = null) where TResponse : ErrorResult, new() where TRequest : class
+        public async Task<TResponse> TransferSendAsync<TRequest, TResponse>(string uriString, HttpMethod method, TRequest request,
+            FormUrlEncodedContent? encodedContent, [CallerMemberName] string callerMethodName = null)
+        where TResponse : ErrorResult, new() where TRequest : class
         {
             {
                 var delay = TimeSpan.FromSeconds(20);
                 var cancellationToken = new CancellationTokenSource(delay).Token;
                 var requestHttpMessage = new HttpRequestMessage(method, uriString);
-                //var token = await _baseRepository.FindAccessToken().ConfigureAwait(false);
+                var refreshToken = await _repository.FindRefreshToken().ConfigureAwait(false);
+                if (refreshToken is null || string.IsNullOrWhiteSpace(refreshToken))
+                {
+                    _logger.LogError($"An appropriate refreshToken not found -> {ErrorCode.NotFound.GetDisplayName()}");
+                    throw new RamzNegarException(ErrorCode.TokenNotFound,
+                                  ErrorCode.AastanApiError.GetDisplayName());
+                }
 
-                //if (token is null)
-                //{
-                //    _logger.LogError($"token is null in the FindAccessToken method ->{ErrorCode.NotFound.GetDisplayName()}");
-                //    throw new RamzNegarException(ErrorCode.TokenNotFound,
-                //                  ErrorCode.AastanApiError.GetDisplayName());
-                //}
-                requestHttpMessage.AddTokenHeader(_options);
-
+                requestHttpMessage.AddAastanCommonHeader(refreshToken, _options);
                 if (method == HttpMethod.Post && request != null)
                 {
                     requestHttpMessage.Content =
                         new StringContent(
                             JsonSerializer.Serialize(request, ServiceHelperExtension.JsonSerializerOptions),
+                    Encoding.UTF8, "application/json");
+                }
+                if (request is null && encodedContent !=null)
+                {
+                    requestHttpMessage.Content =
+                        new StringContent(
+                            JsonSerializer.Serialize(encodedContent, ServiceHelperExtension.JsonSerializerOptions),
                     Encoding.UTF8, "application/json");
                 }
                 HttpResponseMessage httpResponseMessage;

@@ -24,18 +24,25 @@ namespace AasanApis.Services
             _astanOptions = astanOptions.Value;
             _baseLog = baseLog;
         }
+
+       
         public async Task<MatchingEncryptRes> GetMatchingEncryptedAsync(MatchingEncryptReq matchingEncryptReq)
         {
             var response = await _baseLog.TransferSendAsync<MatchingEncryptReq, MatchingEncryptRes>
-                (_astanOptions.RefreshTokenAddress, HttpMethod.Post, matchingEncryptReq);
+                (_astanOptions.RefreshTokenAddress, HttpMethod.Post, matchingEncryptReq,null);
             return response;
         }
 
         public async Task<RefreshTokenRes> GetRefreshTokenAsync(RefreshTokenReq refreshTokenReq)
         {
-            //var tokenResult = await GetTokenAsync();
+            var result = new Dictionary<string, string>
+            {
+                {"grant_type", _astanOptions.GrantType},
+                {"refresh_token", refreshTokenReq.RefreshToken},
+            };
+            var formUrlEncodedContent = new FormUrlEncodedContent(result);
             var response = await _baseLog.TransferSendAsync<RefreshTokenReq, RefreshTokenRes>
-                (_astanOptions.RefreshTokenAddress, HttpMethod.Post, refreshTokenReq);
+                (_astanOptions.RefreshTokenAddress, HttpMethod.Post, null, formUrlEncodedContent);
             return response;
         }
 

@@ -10,5 +10,7 @@
         public int? ExpireTimeInSecond { get; set; }
         public string? RequestId { get; set; }
         public string? SafeServiceId { get; set; }
+        public DateTime CreateDate { get; set; }   
+        public DateTime ExpirationDateTime { get; set;}
     }
 }

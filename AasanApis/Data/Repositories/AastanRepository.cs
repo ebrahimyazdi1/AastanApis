@@ -76,16 +76,16 @@ namespace AasanApis.Data.Repositories
 
         public async Task AddOrUpdateTokenAsync(string? accessToken)
         {
-            var query = _dbContext.AccessTokens.SingleOrDefault(i => i.Id == "7");
-            if (query is null)
+            var accesTokenEntity = _dbContext.AccessTokens.SingleOrDefault(i => i.Id == "7");
+            if (accesTokenEntity is null)
             {
-                query = new AccessTokenEntity();
-                query.Id = "7";
-                query.TokenName = "AastanToken";
-                await _dbContext.AccessTokens.AddAsync(query).ConfigureAwait(false);
+                accesTokenEntity = new AccessTokenEntity();
+                accesTokenEntity.Id = "7";
+                accesTokenEntity.TokenName = "AastanToken";
+                await _dbContext.AccessTokens.AddAsync(accesTokenEntity).ConfigureAwait(false);
             }
-            query.AccessToken = accessToken;
-            query.TokenDateTime = DateTime.UtcNow;
+            accesTokenEntity.AccessToken = accessToken;
+            accesTokenEntity.TokenDateTime = DateTime.Now;
             try
             {
                 await _dbContext.SaveChangesAsync().ConfigureAwait(false);
@@ -98,7 +98,7 @@ namespace AasanApis.Data.Repositories
                     $"Exception occurred while: {nameof(AddOrUpdateTokenAsync)}  => {ErrorCode.AastanTokenApiError.GetDisplayName()}");
             }
 
-            //return query;
+
         }
 
         public async Task InsertShahkarRequestsLog(ShahkarRequestsLogDTO shahkarRequestsLogDTO)
@@ -106,11 +106,11 @@ namespace AasanApis.Data.Repositories
 
             var test = _dbContext.ChangeTracker.DebugView.LongView;
 
-            var mappedEntity= _mapper.Map<ShahkarRequestsLogEntity>(shahkarRequestsLogDTO);
-            var entity=_dbContext.ShahkarRequestsLog.Add(mappedEntity);
+            var mappedEntity = _mapper.Map<ShahkarRequestsLogEntity>(shahkarRequestsLogDTO);
+            var entity = _dbContext.ShahkarRequestsLog.Add(mappedEntity);
             try
             {
-               await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -124,8 +124,8 @@ namespace AasanApis.Data.Repositories
         {
             var test = _dbContext.ChangeTracker.DebugView.LongView;
             ShahkarRequestsLogDTO updateShahkar = new ShahkarRequestsLogDTO()
-            { 
-                RequestId= updateShahkarRequests?.RequestId,
+            {
+                RequestId = updateShahkarRequests?.RequestId,
             };
             var mappedEntity = _mapper.Map<ShahkarRequestsLogEntity>(updateShahkar);
             var entity = _dbContext.ShahkarRequestsLog.Add(mappedEntity);
@@ -139,6 +139,59 @@ namespace AasanApis.Data.Repositories
                 _logger.LogError(ex, $"Exception occurred while {nameof(UpdateShahkarRequestsLog)}");
                 throw new ApplicationException($"Exception occurred while: {nameof(UpdateShahkarRequestsLog)}  => {ex.Message}");
             }
+        }
+
+        public async Task<string> FindRefreshToken()
+        {
+            var refreshToken = await _dbContext.ShahkarRequestsLog
+                .OrderByDescending(x => x.Id)
+                .Select(x => x.RefreshToken)
+                .FirstOrDefaultAsync();
+            return refreshToken ?? string.Empty;
+        }
+
+        public async Task<string> FindRefreshTokenById(string accessToken)
+        {
+            var refreshToken = await _dbContext.ShahkarRequestsLog
+              .Where(x => x.AccessToken == accessToken)
+              .Select(x => x.RefreshToken)
+              .FirstOrDefaultAsync();
+            return refreshToken ?? string.Empty;
+        }
+
+        public async Task<ShahkarRequestsLogEntity> FindAccessToken()
+        {
+            var tokenEntity = await _dbContext.ShahkarRequestsLog
+                .AsNoTracking().
+                OrderByDescending(x => x.Id)
+                .FirstOrDefaultAsync();
+            var hasValidToken = tokenEntity != null && tokenEntity.ExpirationDateTime > DateTime.UtcNow;
+            if (hasValidToken)
+            {
+                return tokenEntity;
+            }
+            return new ShahkarRequestsLogEntity();
+        }
+
+
+        public async Task<ShahkarRequestsLogEntity> UpdateShahkarRequestLogTokenAsync(TokenRes tokenRes,
+            ShahkarRequestsLogEntity shahkarRequestsLogEntity)
+        {
+            if (shahkarRequestsLogEntity is null)
+            {
+                shahkarRequestsLogEntity = new ShahkarRequestsLogEntity();
+                _dbContext.ShahkarRequestsLog.Add(shahkarRequestsLogEntity);
+            }
+            shahkarRequestsLogEntity.ExpirationDateTime = (DateTime.Now.AddSeconds(tokenRes.ExpireTimesInSecond));
+            shahkarRequestsLogEntity.CreateDate = DateTime.Now;
+            shahkarRequestsLogEntity.ErrorMessage = null;
+            shahkarRequestsLogEntity.RefreshToken = tokenRes.RefreshToken;
+            shahkarRequestsLogEntity.AccessToken = tokenRes.AccessToken;
+            shahkarRequestsLogEntity.Scope = tokenRes.Scope;
+            shahkarRequestsLogEntity.TokenType = tokenRes.TokenType;
+            shahkarRequestsLogEntity.ExpireTimeInSecond = tokenRes.ExpireTimesInSecond;
+            await _dbContext.SaveChangesAsync();
+            return shahkarRequestsLogEntity;
         }
     }
 }
