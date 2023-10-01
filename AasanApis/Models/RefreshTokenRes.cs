@@ -7,10 +7,10 @@ namespace AasanApis.Models
 {
     public class RefreshTokenRes : ErrorResult
     {
-        [JsonPropertyName("accessToken")]
+        [JsonPropertyName("access_Token")]
         public string AccsessToken { get; set; }
 
-        [JsonPropertyName("refreshToken")]
+        [JsonPropertyName("refresh_Token")]
         public string RefreshToken { get; set; }
 
 
@@ -18,12 +18,12 @@ namespace AasanApis.Models
         public string Scope { get; set; }
 
 
-        [JsonPropertyName("tokenType")]
+        [JsonPropertyName("token_Type")]
         public string TokenType { get; set; }
 
 
-        [JsonPropertyName("expiresIn")]
-        public string ExpireTimesInSecond { get; set; }
+        [JsonPropertyName("expires_In")]
+        public long ExpireTimesInSecond { get; set; }
 
         [NotMapped]
         public string RequestId { get; set; }

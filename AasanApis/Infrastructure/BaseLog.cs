@@ -47,7 +47,7 @@ namespace AasanApis.Infrastructure
         where TResponse : ErrorResult, new() where TRequest : class
         {
             {
-                var delay = TimeSpan.FromSeconds(20);
+                var delay = TimeSpan.FromSeconds(50);
                 var cancellationToken = new CancellationTokenSource(delay).Token;
                 var requestHttpMessage = new HttpRequestMessage(method, uriString);
                 var refreshToken = await _repository.FindRefreshToken().ConfigureAwait(false);
@@ -68,10 +68,11 @@ namespace AasanApis.Infrastructure
                 }
                 if (request is null && encodedContent !=null)
                 {
-                    requestHttpMessage.Content =
-                        new StringContent(
-                            JsonSerializer.Serialize(encodedContent, ServiceHelperExtension.JsonSerializerOptions),
-                    Encoding.UTF8, "application/json");
+                    requestHttpMessage.Content = encodedContent;
+                    //requestHttpMessage.Content =
+                    //    new StringContent(
+                    //        JsonSerializer.Serialize(encodedContent, ServiceHelperExtension.JsonSerializerOptions),
+                    //Encoding.UTF8, "application/json");
                 }
                 HttpResponseMessage httpResponseMessage;
                 try

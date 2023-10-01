@@ -1,11 +1,22 @@
-﻿namespace AasanApis.Models
+﻿using System.Text.Json.Serialization;
+
+namespace AasanApis.Models
 {
     public class RefreshTokenResDTO
     {
-        public string AccsessToken { get; set; }
+        [JsonPropertyName("access_token")]
+        public string AccessToken { get; set; }
+
+        [JsonPropertyName("refresh_token")]
         public string RefreshToken { get; set; }
+
+        [JsonPropertyName("token_type")]
         public string TokenType { get; set; }
+
+        [JsonPropertyName("scope")]
         public string Scope { get; set; }
-        public string ExpireTimesInSecond{ get; set; }
+
+        [JsonPropertyName("expires_in")]
+        public long ExpireTimesInSecond{ get; set; }
     }
 }

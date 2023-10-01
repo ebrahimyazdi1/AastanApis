@@ -62,7 +62,7 @@ namespace AasanApis.Services
                     SafeServiceId = basePublicLog.PublicLogData.ServiceId ?? Guid.NewGuid().ToString(),
                     Scope = tokenResult?.Scope,
                     TokenType = tokenResult?.TokenType,
-                    CreateDate = DateTime.UtcNow,
+                    CreateDate = DateTime.Now,
                     ExpirationDateTime =
                             (DateTime.Now.AddSeconds(tokenResult.ExpireTimesInSecond))
 
@@ -104,16 +104,16 @@ namespace AasanApis.Services
                         StatusCode = tokenResult?.StatusCode,
                     };
                 }
-                UpdateShahkarRequestsLogDTO updateRequest = new UpdateShahkarRequestsLogDTO
-                {
-                    RequestId = tokenResult.RequestId
-                };
-                _ = _repository.UpdateShahkarRequestsLog(updateRequest);
+                //UpdateShahkarRequestsLogDTO updateRequest = new UpdateShahkarRequestsLogDTO
+                //{
+                //    RequestId = tokenResult.RequestId
+                //};
+               // _ = _repository.UpdateShahkarRequestsLog(updateRequest);
 
-                var tokenOutput = _mapper.Map<RefreshTokenResDTO>(tokenResult);
+                //var tokenOutput = _mapper.Map<RefreshTokenResDTO>(tokenResult.ResultMessage);
                 return new OutputModel
                 {
-                    Content = JsonSerializer.Serialize(tokenOutput),
+                    Content = tokenResult.ResultMessage,
                     RequestId = requestId,
                     StatusCode = tokenResult?.StatusCode,
                 };
@@ -169,7 +169,7 @@ namespace AasanApis.Services
         private async Task<String> GetRefreshToken()
         {
             var shahkarEntity = await _repository.FindAccessToken().ConfigureAwait(false);
-            if (shahkarEntity is not null) return shahkarEntity.AccessToken;
+            if (shahkarEntity is not null) return shahkarEntity.RefreshToken;
 
             //Cause of nothing token find in shahkarLog have to call getToken service.
             var loginResponse = await _client.GetTokenAsync().ConfigureAwait(false);
