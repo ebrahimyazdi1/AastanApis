@@ -50,15 +50,16 @@ namespace AasanApis.Infrastructure
                 var delay = TimeSpan.FromSeconds(50);
                 var cancellationToken = new CancellationTokenSource(delay).Token;
                 var requestHttpMessage = new HttpRequestMessage(method, uriString);
-                var refreshToken = await _repository.FindRefreshToken().ConfigureAwait(false);
-                if (refreshToken is null || string.IsNullOrWhiteSpace(refreshToken))
+                var accToken = await _repository.FindToken().ConfigureAwait(false);
+                if (accToken is null || string.IsNullOrWhiteSpace(accToken))
                 {
                     _logger.LogError($"An appropriate refreshToken not found -> {ErrorCode.NotFound.GetDisplayName()}");
                     throw new RamzNegarException(ErrorCode.TokenNotFound,
                                   ErrorCode.AastanApiError.GetDisplayName());
                 }
 
-                requestHttpMessage.AddAastanCommonHeader(refreshToken, _options);
+                requestHttpMessage.AddAastanCommonHeader(accToken, _options);
+             
                 if (method == HttpMethod.Post && request != null)
                 {
                     requestHttpMessage.Content =
@@ -73,6 +74,14 @@ namespace AasanApis.Infrastructure
                     //    new StringContent(
                     //        JsonSerializer.Serialize(encodedContent, ServiceHelperExtension.JsonSerializerOptions),
                     //Encoding.UTF8, "application/json");
+                }
+                if (request is not null && encodedContent != null)
+                {
+                    requestHttpMessage.Content = encodedContent;
+                    requestHttpMessage.Content =
+                        new StringContent(
+                            JsonSerializer.Serialize(request, ServiceHelperExtension.JsonSerializerOptions),
+                    Encoding.UTF8, "application/json");
                 }
                 HttpResponseMessage httpResponseMessage;
                 try

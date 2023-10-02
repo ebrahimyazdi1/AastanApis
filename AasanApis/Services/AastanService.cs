@@ -6,6 +6,8 @@ using AasanApis.Exceptions;
 using AasanApis.Infrastructure.Extension;
 using AasanApis.Models;
 using AutoMapper;
+using Elasticsearch.Net.Specification.IndexLifecycleManagementApi;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Extensions;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using System.Text.Json;
@@ -15,22 +17,27 @@ namespace AasanApis.Services
     public class AastanService : IAastanService
     {
         private IMapper _mapper;
+
         private readonly ILogger<AastanService> _logger;
-        private IConfiguration _config { get; set; }
-        //private IBaseRepository _baseRepository { get; set; }
+
+        private readonly AastanOptions _astanOptions;
+
+        public IWebHostEnvironment _webHostEnvironment { get; }
         private IAastanRepository _repository { get; set; }
         private IAastanClient _client { get; set; }
 
         IHttpContextAccessor httpContextAccessor { get; set; }
 
         public AastanService(IMapper mapper, ILogger<AastanService> logger, IConfiguration config,
-           IAastanRepository repository, IAastanClient client)
+           IAastanRepository repository, IAastanClient client, IWebHostEnvironment webHostEnvironment
+           , IOptions<AastanOptions> astanOptions)
         {
             _mapper = mapper;
             _logger = logger;
-            _config = config;
             _repository = repository;
             _client = client;
+            _webHostEnvironment = webHostEnvironment;
+            _astanOptions = astanOptions.Value;
         }
 
         public async Task<OutputModel> GetTokenAsync(BasePublicLogData basePublicLog)
@@ -91,7 +98,7 @@ namespace AasanApis.Services
                     refreshTokenReqDTO.PublicLogData?.UserId, refreshTokenReqDTO.PublicLogData?.PublicAppId, refreshTokenReqDTO.PublicLogData?.ServiceId);
                 string requestId = await _repository.InsertAastanRequestLog(astanRequest);
                 var refrehTokenReq = _mapper.Map<RefreshTokenReq>(refreshTokenReqDTO);
-                var refreshToken = await GetRefreshToken();
+                var refreshToken = await GetAccessToken();
                 refrehTokenReq.RefreshToken = refreshToken;
                 var tokenResult = await _client.GetRefreshTokenAsync(refrehTokenReq);
                 if (tokenResult is null || !tokenResult.IsSuccess)
@@ -108,7 +115,7 @@ namespace AasanApis.Services
                 //{
                 //    RequestId = tokenResult.RequestId
                 //};
-               // _ = _repository.UpdateShahkarRequestsLog(updateRequest);
+                // _ = _repository.UpdateShahkarRequestsLog(updateRequest);
 
                 //var tokenOutput = _mapper.Map<RefreshTokenResDTO>(tokenResult.ResultMessage);
                 return new OutputModel
@@ -130,12 +137,40 @@ namespace AasanApis.Services
         {
             try
             {
+                if (matchingEncryptReqDTO is null)
+                {
+                    //ServiceHelperExtension.GenerateApiErrorResponse<OutputModel>();
+                }
+
+
                 _logger.LogInformation($"{nameof(GetMatchingEncryptedAsync)} request sent - input is : \r\n {matchingEncryptReqDTO}");
                 AastanRequestLogDTO astanRequest = new AastanRequestLogDTO(matchingEncryptReqDTO.PublicLogData?.PublicReqId, matchingEncryptReqDTO.ToString(),
                     matchingEncryptReqDTO.PublicLogData?.UserId, matchingEncryptReqDTO.PublicLogData?.PublicAppId, matchingEncryptReqDTO.PublicLogData?.ServiceId);
                 string requestId = await _repository.InsertAastanRequestLog(astanRequest);
-                var mappedMatching = _mapper.Map<MatchingEncryptReq>(matchingEncryptReqDTO);
-                var tokenResult = await _client.GetMatchingEncryptedAsync(mappedMatching);
+                var publicKey = JWESignManagement.Readkey(Path.Join(_webHostEnvironment.ContentRootPath, 
+                    "Certs", "Aastan-pubkey.pem")).Result;
+
+                var data = GenerateData();
+                //mobileNumber
+                var tokenServiceNumber = JWESignManagement.GetEncryptedToken(matchingEncryptReqDTO.MobileNumber,
+                    data.Iat, publicKey);
+
+                //nationalCode
+                var tokenIdentificationNo = JWESignManagement.GetEncryptedToken(matchingEncryptReqDTO.NationalCode,
+                    data.Iat, publicKey);
+                // var mappedMatching = _mapper.Map<MatchingEncryptReq>(matchingEncryptReqDTO);
+                MatchingEncryptReq machingData = new MatchingEncryptReq
+                {
+
+                    IdentificationNo = tokenIdentificationNo,
+                    RequestId = data.RequestId,
+                    ServiceType = 2,
+                    IdentificationType = 0,
+                    ServiceNumber = tokenServiceNumber
+                };
+
+
+                var tokenResult = await _client.GetMatchingEncryptedAsync(machingData);
                 if (tokenResult is null || !tokenResult.IsSuccess)
                 {
                     _logger.LogError($"the result of calling the MatchingEncryptedService is not ok {nameof(GetMatchingEncryptedAsync)}");
@@ -165,16 +200,28 @@ namespace AasanApis.Services
             }
         }
 
-
-        private async Task<String> GetRefreshToken()
+        #region privateMethods
+        private async Task<String> GetAccessToken()
         {
             var shahkarEntity = await _repository.FindAccessToken().ConfigureAwait(false);
-            if (shahkarEntity is not null) return shahkarEntity.RefreshToken;
+            if (shahkarEntity is not null) return shahkarEntity.AccessToken;
 
             //Cause of nothing token find in shahkarLog have to call getToken service.
             var loginResponse = await _client.GetTokenAsync().ConfigureAwait(false);
             await _repository.UpdateShahkarRequestLogTokenAsync(loginResponse, shahkarEntity);
-            return loginResponse.RefreshToken;
+            return loginResponse.AccessToken;
         }
+
+        //Generate the requestIt and Iat. requestId consists of 20 digits(ComponyProvider,dateString,6 Zero) 
+        private MatchingModel GenerateData()
+        {
+            TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
+            int secondsSinceEpoch = (int)t.TotalSeconds;
+            string strDate = DateTime.Today.ToString("yyyyMMdd");
+            string requestId = _astanOptions.CompanyCode + strDate + "000000";
+            return new MatchingModel { Iat = secondsSinceEpoch, RequestId = requestId };
+        }
+        #endregion
+
     }
 }

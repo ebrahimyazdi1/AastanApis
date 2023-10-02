@@ -28,8 +28,14 @@ namespace AasanApis.Services
        
         public async Task<MatchingEncryptRes> GetMatchingEncryptedAsync(MatchingEncryptReq matchingEncryptReq)
         {
+
+            var result = new Dictionary<string, string>
+            {
+                {"grant_type", "password"}
+            };
+            var formUrlEncodedContent = new FormUrlEncodedContent(result);
             var response = await _baseLog.TransferSendAsync<MatchingEncryptReq, MatchingEncryptRes>
-                (_astanOptions.RefreshTokenAddress, HttpMethod.Post, matchingEncryptReq,null);
+                (_astanOptions.RefreshTokenAddress, HttpMethod.Post, matchingEncryptReq, formUrlEncodedContent);
             return response;
         }
 

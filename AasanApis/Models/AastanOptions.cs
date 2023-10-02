@@ -11,6 +11,6 @@
         public string Password { get; set; }
         public string Authorization { get; set; }
         public string GrantType { get; set; }
-
+        public string CompanyCode { get; set; }
     }
 }

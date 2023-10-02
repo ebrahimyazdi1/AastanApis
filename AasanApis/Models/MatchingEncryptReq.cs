@@ -19,6 +19,13 @@ namespace AasanApis.Models
         public string IdentificationNo { get; set; }
 
         /// <summary>
+        /// شماره موبایل
+        /// </summary>
+        [JsonPropertyName("serviceNumber")]
+        public string ServiceNumber { get; set; }
+
+
+        /// <summary>
         /// نوع شناسه هویتی
         ///کد ملی =0 و شماره گذرنامه =1 و شماره کارت ازمایش =2  و شماره کارت پناهندگی = 3 
         /// شماره گذرنامه = 6 و شماره کارت هویت =4 و شناسه ملی= 5 
@@ -31,5 +38,8 @@ namespace AasanApis.Models
         /// </summary>
         [JsonPropertyName("serviceType")]
         public int ServiceType { get; set; }
+
+
+
     }
 }

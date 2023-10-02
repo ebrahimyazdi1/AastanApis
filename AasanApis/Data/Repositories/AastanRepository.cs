@@ -172,7 +172,15 @@ namespace AasanApis.Data.Repositories
             }
             return new ShahkarRequestsLogEntity();
         }
-
+        public async Task<string> FindToken()
+        {
+            var tokenEntity = await _dbContext.ShahkarRequestsLog
+                .AsNoTracking()
+                .OrderByDescending(x => x.Id)
+                .FirstOrDefaultAsync();
+            var hasValidToken = tokenEntity != null && tokenEntity.ExpirationDateTime > DateTime.UtcNow;
+            return hasValidToken ? tokenEntity.AccessToken : string.Empty;
+        }
 
         public async Task<ShahkarRequestsLogEntity> UpdateShahkarRequestLogTokenAsync(TokenRes tokenRes,
             ShahkarRequestsLogEntity shahkarRequestsLogEntity)
@@ -193,5 +201,7 @@ namespace AasanApis.Data.Repositories
             await _dbContext.SaveChangesAsync();
             return shahkarRequestsLogEntity;
         }
+
+       
     }
 }

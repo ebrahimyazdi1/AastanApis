@@ -1,39 +1,45 @@
-﻿
-
-using JsonWebToken;
-using Microsoft.IdentityModel.Tokens;
+﻿using JsonWebToken;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Crypto;
-using System.IdentityModel.Tokens.Jwt;
+
 
 namespace AasanApis.Services
 {
     public static class JWESignManagement
     {
-        public static AsymmetricKeyParameter Readkey(string keyPath)
+        public static async Task<string> Readkey(string filePath)
         {
-            var fileStream = File.OpenText(keyPath);
-            var pemReader = new Org.BouncyCastle.OpenSsl.PemReader(fileStream);
-            var key = (AsymmetricKeyParameter)pemReader.ReadObject();
-            return key;
+            using (StreamReader reader = File.OpenText(filePath))
+            {
+                string publicKey = await reader.ReadToEndAsync();
+                return publicKey;
+            }
         }
 
-        //public static string GetEncryptedToken(string inputData, int inputIat, string key)
-        //{
-        //    var payload = new { data = inputData, iat = inputIat };
-        //    string jsonPayload = JsonConvert.SerializeObject(payload);
+        public static string GetEncryptedToken(string inputData, int inputIat, string publicKeyStringShahkar)
+        {
+            var payload = new { data = inputData, iat = inputIat };
+            string jsonPayload = JsonConvert.SerializeObject(payload);
+            var asymmetricJwkKey = AsymmetricJwk.FromPem(publicKeyStringShahkar);
+            var asyDescriptorPlainText = new PlaintextJweDescriptor(jsonPayload);
+            asyDescriptorPlainText.EncryptionKey = asymmetricJwkKey;
+            asyDescriptorPlainText.EncryptionAlgorithm = EncryptionAlgorithm.Aes256Gcm;
+            asyDescriptorPlainText.Algorithm = KeyManagementAlgorithm.EcdhEsAes256KW;
+            var writer = new JwtWriter();
+            var token= writer.WriteTokenString(asyDescriptorPlainText);
+            //Console.WriteLine("----------------------------------Start " + inputData +
+            //                " --------------------------------");
 
-        //    //var asyDescriptorPlainText = new PlaintextJweDescriptor(
-        //    //   KeyManagementAlgorithm.EcdhEsAes256KW, EncryptionAlgorithm.Aes256Gcm)
-        //    //{
-        //    //    Payload = jsonPayload
-        //    //};
-
-        //    var asy=new PlaintextJweDescriptor(jsonPayload);
-           
-
-
-        //}
+            //Console.WriteLine("The JWT is:");
+            //Console.WriteLine(asyDescriptorPlainText);
+            //Console.WriteLine();
+            //Console.WriteLine("Its compact form is:");
+            //Console.WriteLine(token);
+            //Console.WriteLine("----------------------------------Finish " + inputData +
+            //                  " --------------------------------");
+            return token;
+        }
 
 
 

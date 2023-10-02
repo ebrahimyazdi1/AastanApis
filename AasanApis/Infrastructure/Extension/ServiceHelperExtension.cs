@@ -3,9 +3,8 @@ using System.Text.Json;
 using Microsoft.OpenApi.Extensions;
 using AasanApis.Models;
 using AasanApis.ErrorHandling;
-using System.Net.Http.Headers;
 using System.Text;
-using Microsoft.Extensions.Options;
+
 
 namespace AasanApis.Infrastructure.Extension
 {
@@ -22,23 +21,15 @@ namespace AasanApis.Infrastructure.Extension
             IgnoreNullValues = true
         };
 
-        public static void AddAastanCommonHeader(this HttpRequestMessage request, string refreshToken, AastanOptions options)
+        public static void AddAastanCommonHeader(this HttpRequestMessage request, string Token, AastanOptions options)
         {
             var authenticationParam =
                   Convert.ToBase64String(
                     Encoding.ASCII.GetBytes($"{options.UserName}:{options.Password}"));
             request.Headers.Add("Authorization", "Basic " + authenticationParam);
+            request.Headers.Add("Token", Token);
         }
-        //public static FormUrlEncodedContent LoginFormUrlEncodedContent(AastanOptions options)
-        //{
-        //    var result = new Dictionary<string, string>
-        //    {
-        //        {"password", options.Password},
-        //        {"username", options.UserName},
-        //    };
-        //    var formUrlEncodedContent = new FormUrlEncodedContent(result);
-        //    return formUrlEncodedContent;
-        //}
+        
         public static T GenerateApiErrorResponse<T>(ErrorCodesProvider errorCode) where T : ErrorResult, new()
         {
             return new T
