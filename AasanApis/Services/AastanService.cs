@@ -218,7 +218,8 @@ namespace AasanApis.Services
             TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
             int secondsSinceEpoch = (int)t.TotalSeconds;
             string strDate = DateTime.Today.ToString("yyyyMMdd");
-            string requestId = _astanOptions.CompanyCode + strDate + "000000";
+            string timeString = DateTime.Now.ToString("HHmmss");
+            string requestId = _astanOptions.CompanyCode + strDate + timeString + "000000";
             return new MatchingModel { Iat = secondsSinceEpoch, RequestId = requestId };
         }
         #endregion
