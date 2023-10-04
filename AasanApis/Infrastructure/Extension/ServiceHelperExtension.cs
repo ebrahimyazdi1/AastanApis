@@ -25,9 +25,14 @@ namespace AasanApis.Infrastructure.Extension
         {
             var authenticationParam =
                   Convert.ToBase64String(
-                    Encoding.ASCII.GetBytes($"{options.UserName}:{options.Password}"));
+                    Encoding.ASCII.GetBytes($"{options.AstanUserName}:{options.AstanPassword}"));
             request.Headers.Add("Authorization", "Basic " + authenticationParam);
+            var basicAuthorizationParam =
+              Convert.ToBase64String(
+                Encoding.ASCII.GetBytes($"{options.RadioUserName}:{options.RadioPassword}"));
+            request.Headers.Add("basicAuthorization", basicAuthorizationParam);
             request.Headers.Add("Token", Token);
+           
         }
         
         public static T GenerateApiErrorResponse<T>(ErrorCodesProvider errorCode) where T : ErrorResult, new()

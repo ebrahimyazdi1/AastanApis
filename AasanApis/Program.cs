@@ -20,7 +20,7 @@ builder.Services.AddHttpClient<IAastanClient, AastanClient>((sp, client) =>
     var options = sp.GetRequiredService<IOptions<AastanOptions>>().Value;
     var authenticationParam =
       Convert.ToBase64String(
-          Encoding.ASCII.GetBytes($"{options.UserName}:{options.Password}"));
+          Encoding.ASCII.GetBytes($"{options.AstanUserName}:{options.AstanPassword}"));
     client.BaseAddress = new Uri(options.TokenAddress, UriKind.RelativeOrAbsolute);
     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authenticationParam);
 

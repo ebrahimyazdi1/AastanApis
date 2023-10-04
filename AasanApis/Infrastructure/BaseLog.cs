@@ -59,7 +59,6 @@ namespace AasanApis.Infrastructure
                 }
 
                 requestHttpMessage.AddAastanCommonHeader(accToken, _options);
-             
                 if (method == HttpMethod.Post && request != null)
                 {
                     requestHttpMessage.Content =
@@ -75,14 +74,7 @@ namespace AasanApis.Infrastructure
                     //        JsonSerializer.Serialize(encodedContent, ServiceHelperExtension.JsonSerializerOptions),
                     //Encoding.UTF8, "application/json");
                 }
-                if (request is not null && encodedContent != null)
-                {
-                    requestHttpMessage.Content = encodedContent;
-                    requestHttpMessage.Content =
-                        new StringContent(
-                            JsonSerializer.Serialize(request, ServiceHelperExtension.JsonSerializerOptions),
-                    Encoding.UTF8, "application/json");
-                }
+              
                 HttpResponseMessage httpResponseMessage;
                 try
                 {
