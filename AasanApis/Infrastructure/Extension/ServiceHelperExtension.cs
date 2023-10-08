@@ -23,15 +23,19 @@ namespace AasanApis.Infrastructure.Extension
 
         public static void AddAastanCommonHeader(this HttpRequestMessage request, string Token, AastanOptions options)
         {
+            var basicAuthorizationParam =
+            Convert.ToBase64String(
+              Encoding.ASCII.GetBytes($"{options.RadioUserName}:{options.RadioPassword}"));
+            request.Headers.Add("Accept", "application/json");
+            request.Headers.Add("Token", Token);
+            request.Headers.Add("basicAuthorization", basicAuthorizationParam);
             var authenticationParam =
                   Convert.ToBase64String(
                     Encoding.ASCII.GetBytes($"{options.AstanUserName}:{options.AstanPassword}"));
             request.Headers.Add("Authorization", "Basic " + authenticationParam);
-            var basicAuthorizationParam =
-              Convert.ToBase64String(
-                Encoding.ASCII.GetBytes($"{options.RadioUserName}:{options.RadioPassword}"));
-            request.Headers.Add("basicAuthorization", basicAuthorizationParam);
-            request.Headers.Add("Token", Token);
+          
+            //request.Headers.Add("basicAuthorization", basicAuthorizationParam);
+            //request.Headers.Add("Token", Token);
            
         }
         
