@@ -10,24 +10,31 @@ namespace AasanApis.Infrastructure.Extension
     {
         public bool IsSuccess { get; set; }
         public int StatusCode { get; set; }
-
+        public string RequestId { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string Message { get; set; }
+        public string? Message { get; set; }
+        public ApiResult()
+        {
 
-        public ApiResult(bool isSuccess, ErrorCode statusCode, string message = null)
+        }
+        public ApiResult(bool isSuccess, ErrorCode statusCode, string? requestId = null, string? message = null)
         {
             IsSuccess = isSuccess;
             StatusCode = (int)statusCode;
             Message = message ?? statusCode.GetDisplayName();
+            RequestId = requestId;
+
         }
-        public ApiResult(bool isSuccess, int statusCode1, string message = null)
+
+        public ApiResult(bool isSuccess, int statusCode, string? message)
         {
             IsSuccess = isSuccess;
-            StatusCode = statusCode1;
-
-            Message = "خطای ناشناخته";
+            StatusCode = statusCode;
+            Message = message ?? "خطای ناشناخته";
         }
-        #region Implicit Operators
+
+        #region Implicit Opertors
+
         public static implicit operator ApiResult(OkResult result)
         {
             return new ApiResult(true, ErrorCode.Success);
@@ -44,8 +51,9 @@ namespace AasanApis.Infrastructure.Extension
             if (result.Value is SerializableError errors)
             {
                 var errorMessages = errors.SelectMany(p => (string[])p.Value).Distinct();
-                message = string.Join(" | ", errorMessages);
+                message = string.Join('|', errorMessages);
             }
+
             return new ApiResult(false, ErrorCode.BadRequest, message);
         }
 
@@ -58,22 +66,24 @@ namespace AasanApis.Infrastructure.Extension
         {
             return new ApiResult(false, ErrorCode.NotFound);
         }
+
         #endregion
     }
 
     public class ApiResult<TData> : ApiResult
-        where TData : class
+    where TData : class
     {
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public TData Data { get; set; }
 
-        public ApiResult(bool isSuccess, ErrorCode statusCode, TData data, string message = null)
+        public ApiResult(bool isSuccess, ErrorCode statusCode, TData data, string? message = null)
             : base(isSuccess, statusCode, message)
         {
             Data = data;
         }
 
         #region Implicit Operators
+
         public static implicit operator ApiResult<TData>(TData data)
         {
             return new ApiResult<TData>(true, ErrorCode.Success, data);
@@ -119,6 +129,7 @@ namespace AasanApis.Infrastructure.Extension
         {
             return new ApiResult<TData>(false, ErrorCode.NotFound, (TData)result.Value);
         }
+
         #endregion
     }
 }

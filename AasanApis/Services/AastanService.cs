@@ -19,7 +19,7 @@ namespace AasanApis.Services
         private IMapper _mapper;
 
         private readonly ILogger<AastanService> _logger;
-
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AastanOptions _astanOptions;
 
         public IWebHostEnvironment _webHostEnvironment { get; }
@@ -30,7 +30,7 @@ namespace AasanApis.Services
 
         public AastanService(IMapper mapper, ILogger<AastanService> logger, IConfiguration config,
            IAastanRepository repository, IAastanClient client, IWebHostEnvironment webHostEnvironment
-           , IOptions<AastanOptions> astanOptions)
+           , IOptions<AastanOptions> astanOptions, IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
             _logger = logger;
@@ -38,6 +38,7 @@ namespace AasanApis.Services
             _client = client;
             _webHostEnvironment = webHostEnvironment;
             _astanOptions = astanOptions.Value;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<OutputModel> GetTokenAsync(BasePublicLogData basePublicLog)
@@ -48,13 +49,14 @@ namespace AasanApis.Services
                 AastanRequestLogDTO astanRequest = new AastanRequestLogDTO(basePublicLog.PublicLogData?.PublicReqId, basePublicLog.ToString(),
                     basePublicLog.PublicLogData?.UserId, basePublicLog.PublicLogData?.PublicAppId, basePublicLog.PublicLogData?.ServiceId);
                 string requestId = await _repository.InsertAastanRequestLog(astanRequest);
+                var publicRequestId = _httpContextAccessor.HttpContext.Items["RequestId"] = basePublicLog.PublicLogData?.PublicReqId;
                 var tokenResult = await _client.GetTokenAsync();
                 if (tokenResult is null && !tokenResult.IsSuccess)
                 {
                     return new OutputModel
                     {
                         Content = JsonSerializer.Serialize(tokenResult?.ResultMessage),
-                        RequestId = requestId,
+                        RequestId = publicRequestId?.ToString(),
                         StatusCode = tokenResult?.StatusCode,
                     };
 
@@ -78,7 +80,7 @@ namespace AasanApis.Services
                 return new OutputModel
                 {
                     Content = JsonSerializer.Serialize(tokenOutput) ?? JsonSerializer.Serialize(tokenResult?.ResultMessage),
-                    RequestId = requestId,
+                    RequestId = publicRequestId?.ToString(),
                     StatusCode = tokenResult?.StatusCode,
                 };
             }
@@ -147,6 +149,7 @@ namespace AasanApis.Services
                 AastanRequestLogDTO astanRequest = new AastanRequestLogDTO(matchingEncryptReqDTO.PublicLogData?.PublicReqId, matchingEncryptReqDTO.ToString(),
                     matchingEncryptReqDTO.PublicLogData?.UserId, matchingEncryptReqDTO.PublicLogData?.PublicAppId, matchingEncryptReqDTO.PublicLogData?.ServiceId);
                 string requestId = await _repository.InsertAastanRequestLog(astanRequest);
+                var publicRequestId = _httpContextAccessor.HttpContext.Items["RequestId"] = matchingEncryptReqDTO.PublicLogData?.PublicReqId;
                 var publicKey = JWESignManagement.Readkey(Path.Join(_webHostEnvironment.ContentRootPath, 
                     "Certs", "Aastan-pubkey.pem")).Result;
 
@@ -158,7 +161,7 @@ namespace AasanApis.Services
                 //nationalCode
                 var tokenIdentificationNo = JWESignManagement.GetEncryptedToken(matchingEncryptReqDTO.NationalCode,
                     data.Iat, publicKey);
-                // var mappedMatching = _mapper.Map<MatchingEncryptReq>(matchingEncryptReqDTO);
+
                 MatchingEncryptReq machingData = new MatchingEncryptReq
                 {
 
@@ -177,18 +180,17 @@ namespace AasanApis.Services
                     return new OutputModel
                     {
                         Content = JsonSerializer.Serialize(tokenResult),
-                        RequestId = requestId,
+                        RequestId = publicRequestId?.ToString(),
                         StatusCode = tokenResult?.StatusCode,
                     };
                 }
                 //_ = _repository.UpdateShahkarRequestsLog(updateRequest);
                 //to do I should update and some fields in shahkarEntity in the database
                 var tokenOutput = _mapper.Map<MatchingEncryptResDTO>(tokenResult);
-
                 return new OutputModel
                 {
                     Content = JsonSerializer.Serialize(tokenOutput),
-                    RequestId = requestId,
+                    RequestId = publicRequestId?.ToString(),
                     StatusCode = tokenResult?.StatusCode,
                 };
             }

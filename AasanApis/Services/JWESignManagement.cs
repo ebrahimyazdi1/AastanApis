@@ -24,9 +24,11 @@ namespace AasanApis.Services
             {
                 Payload = jsonPayload
             };
-               var writer = new JwtWriter();
+
+            var writer = new JwtWriter();
             var token= writer.WriteTokenString(asyDescriptorPlainText);
             return token;
+
         }
 
         //public static bool VerifySignature(ICipherParameters pubKey, string signature, string msg)

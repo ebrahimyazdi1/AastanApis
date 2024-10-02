@@ -5,19 +5,30 @@ namespace AasanApis.Models
 {
     public class MatchingEncryptRes : ErrorResult
     {
-        [JsonPropertyName("Result.data")]
-        public Data Result { get; set; }
-
-        [JsonPropertyName("result.status.message")]
-        public string Message { get; set; }
+        [JsonPropertyName("result")]
+        public Result Result { get; set; }
 
         [JsonPropertyName("status")]
-        public List<ResultStatus> Status { get; set; }
+        public ResultStatus Status { get; set; }
 
-        [JsonPropertyName("result.status.statusCode")]
-        public int ApiStatusCode { get; set; }
     }
 
+    public class Result
+    {
+
+        [JsonPropertyName("status")]
+        public Status Status { get; set; }
+
+        [JsonPropertyName("data")]
+        public Data Data { get; set; }
+
+    }
+    public class Status
+    {
+        [JsonPropertyName("statusCode")]
+        public int StatusCode { get; set; }
+
+    }
     public class Data
     {
         [JsonPropertyName("result")]
@@ -32,14 +43,14 @@ namespace AasanApis.Models
         [JsonPropertyName("comment")]
         public string Comment { get; set; }
 
-        [JsonPropertyName("id")]
-        public string Id { get; set; }
-
     }
+
+
     public class ResultStatus
     {
         [JsonPropertyName("statusCode")]
         public int StatusCode { get; set; }
+
         [JsonPropertyName("message")]
         public string Message { get; set; }
     }
