@@ -1,8 +1,5 @@
 ﻿using JsonWebToken;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Org.BouncyCastle.Crypto;
-
 
 namespace AasanApis.Services
 {
@@ -22,29 +19,15 @@ namespace AasanApis.Services
             var payload = new { data = inputData, iat = inputIat };
             string jsonPayload = JsonConvert.SerializeObject(payload);
             var asymmetricJwkKey = AsymmetricJwk.FromPem(publicKeyStringShahkar);
-            var asyDescriptorPlainText = new PlaintextJweDescriptor(jsonPayload);
-            asyDescriptorPlainText.EncryptionKey = asymmetricJwkKey;
-            asyDescriptorPlainText.EncryptionAlgorithm = EncryptionAlgorithm.Aes256Gcm;
-            asyDescriptorPlainText.Algorithm = KeyManagementAlgorithm.EcdhEsAes256KW;
-            var writer = new JwtWriter();
+            var asyDescriptorPlainText = new PlaintextJweDescriptor(asymmetricJwkKey,
+                KeyManagementAlgorithm.EcdhEsA256KW, EncryptionAlgorithm.A256Gcm)
+            {
+                Payload = jsonPayload
+            };
+               var writer = new JwtWriter();
             var token= writer.WriteTokenString(asyDescriptorPlainText);
-            //Console.WriteLine("----------------------------------Start " + inputData +
-            //                " --------------------------------");
-
-            //Console.WriteLine("The JWT is:");
-            //Console.WriteLine(asyDescriptorPlainText);
-            //Console.WriteLine();
-            //Console.WriteLine("Its compact form is:");
-            //Console.WriteLine(token);
-            //Console.WriteLine("----------------------------------Finish " + inputData +
-            //                  " --------------------------------");
             return token;
         }
-
-
-
-
-
 
         //public static bool VerifySignature(ICipherParameters pubKey, string signature, string msg)
         //{
