@@ -69,10 +69,7 @@ namespace AasanApis.Infrastructure
                 if (request is null && encodedContent !=null)
                 {
                     requestHttpMessage.Content = encodedContent;
-                    //requestHttpMessage.Content =
-                    //    new StringContent(
-                    //        JsonSerializer.Serialize(encodedContent, ServiceHelperExtension.JsonSerializerOptions),
-                    //Encoding.UTF8, "application/json");
+            
                 }
               
                 HttpResponseMessage httpResponseMessage;

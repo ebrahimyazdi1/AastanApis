@@ -150,7 +150,7 @@ namespace AasanApis.Services
                     matchingEncryptReqDTO.PublicLogData?.UserId, matchingEncryptReqDTO.PublicLogData?.PublicAppId, matchingEncryptReqDTO.PublicLogData?.ServiceId);
                 string requestId = await _repository.InsertAastanRequestLog(astanRequest);
                 var publicRequestId = _httpContextAccessor.HttpContext.Items["RequestId"] = matchingEncryptReqDTO.PublicLogData?.PublicReqId;
-                var publicKey = JWESignManagement.Readkey(Path.Join(_webHostEnvironment.ContentRootPath, 
+                var publicKey = JWESignManagement.Readkey(Path.Join(_webHostEnvironment.ContentRootPath,
                     "Certs", "Aastan-pubkey.pem")).Result;
 
                 var data = GenerateData();
@@ -174,7 +174,7 @@ namespace AasanApis.Services
 
 
                 var tokenResult = await _client.GetMatchingEncryptedAsync(machingData);
-                if (tokenResult is null || !tokenResult.IsSuccess)
+                if (tokenResult is null)
                 {
                     _logger.LogError($"the result of calling the MatchingEncryptedService is not ok {nameof(GetMatchingEncryptedAsync)}");
                     return new OutputModel
@@ -186,7 +186,13 @@ namespace AasanApis.Services
                 }
                 //_ = _repository.UpdateShahkarRequestsLog(updateRequest);
                 //to do I should update and some fields in shahkarEntity in the database
+                var resResult = JsonSerializer.Deserialize<MatchingEncryptRes>(tokenResult.ResultMessage);
                 var tokenOutput = _mapper.Map<MatchingEncryptResDTO>(tokenResult);
+                if (resResult?.Result.Data.Response != 600)
+                    tokenOutput.Matched = true;
+                else
+                    tokenOutput.Matched = false;
+
                 return new OutputModel
                 {
                     Content = JsonSerializer.Serialize(tokenOutput),
