@@ -1,7 +1,7 @@
-﻿using AasanApis.ErrorHandling;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using AastanApis.ErrorHandling;
 
-namespace AasanApis.Models
+namespace AastanApis.Models
 {
     public class MatchingEncryptRes : ErrorResult
     {

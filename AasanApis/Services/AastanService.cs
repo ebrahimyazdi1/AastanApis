@@ -1,18 +1,16 @@
-﻿
-using AasanApis.Data.Entities;
-using AasanApis.Data.Repositories;
-using AasanApis.ErrorHandling;
-using AasanApis.Exceptions;
-using AasanApis.Infrastructure.Extension;
+﻿using AastanApis.Data.Repositories;
 using AasanApis.Models;
 using AutoMapper;
-using Elasticsearch.Net.Specification.IndexLifecycleManagementApi;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Extensions;
-using Org.BouncyCastle.Bcpg.OpenPgp;
 using System.Text.Json;
+using AastanApis.ErrorHandling;
+using AastanApis.Exceptions;
+using AastanApis.Models;
+using Microsoft.OpenApi.Extensions;
+using System.Net.Http;
+using System.Text;
 
-namespace AasanApis.Services
+namespace AastanApis.Services
 {
     public class AastanService : IAastanService
     {
@@ -205,6 +203,89 @@ namespace AasanApis.Services
                 _logger.LogError(e, $"Exception occurred while {nameof(GetMatchingEncryptedAsync)}");
                 throw new RamzNegarException(ErrorCode.AastanApiError,
                     $"Exception occurred while: {nameof(GetMatchingEncryptedAsync)} => {ErrorCode.AastanApiError.GetDisplayName()}");
+            }
+        }
+
+        public async Task<OutputModel> GetPgsbTokenAsync(BasePublicLogData basePublicLogData)
+        {
+            try
+            {
+                _logger.LogInformation($"{nameof(GetPgsbTokenAsync)} request sent - input is : \r\n {basePublicLogData}");
+                var aastanRequest = new AastanRequestLogDTO(basePublicLogData.PublicLogData.PublicReqId, basePublicLogData.ToString(),
+                    basePublicLogData.PublicLogData.UserId, basePublicLogData.PublicLogData.PublicAppId, basePublicLogData.PublicLogData.ServiceId);
+
+                var requestId = await _repository.InsertAastanRequestLog(aastanRequest);
+                var publicRequestId = _httpContextAccessor.HttpContext.Items["RequestId"] = basePublicLogData.PublicLogData.PublicReqId;
+
+                var tokenResult = await _client.GetPgsbTokenAsync();
+                
+                if (tokenResult is null && !tokenResult.IsSuccess)
+                {
+                    return new OutputModel
+                    {
+                        Content = JsonSerializer.Serialize(tokenResult?.ResultMessage),
+                        RequestId = publicRequestId.ToString(),
+                        StatusCode = tokenResult?.StatusCode,
+                        ReqLogId = requestId
+                    };
+
+                }
+                await _repository.AddOrUpdateTokenAsync(tokenResult.access_token);
+                var tokenOutput = _mapper.Map<TokenResDTO>(tokenResult);
+
+                return new OutputModel
+                {
+                    Content = JsonSerializer.Serialize(tokenOutput),
+                    RequestId = publicRequestId.ToString(),
+                    StatusCode = tokenResult.StatusCode,
+                };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Exception occurred while {nameof(GetPgsbTokenAsync)}");
+                throw new RamzNegarException(ErrorCode.AastanApiError,
+                    $"Exception occurred while: {nameof(GetPgsbTokenAsync)} => {ErrorCode.AastanApiError.GetDisplayName()}");
+            }
+        }
+
+        public async Task<OutputModel> PostConsentInquiryAsync(ConsentInquiryReqDto request)
+        {
+            try
+            {
+                _logger.LogInformation($"{nameof(GetTokenAsync)} request sent - input is : \r\n {request}");
+                var aastanRequest = new AastanRequestLogDTO(request.PublicLogData.PublicReqId, request.ToString(),
+                    request.PublicLogData.UserId, request.PublicLogData.PublicAppId, request.PublicLogData.ServiceId);
+
+                var requestId = await _repository.InsertAastanRequestLog(aastanRequest);
+                var publicRequestId = _httpContextAccessor.HttpContext.Items["RequestId"] = request.PublicLogData.PublicReqId;
+
+                var tokenResult = await _client.PostConsentInquiryAsync(request);
+
+                if (tokenResult is null && !tokenResult.IsSuccess)
+                {
+                    return new OutputModel
+                    {
+                        Content = JsonSerializer.Serialize(tokenResult?.ResultMessage),
+                        RequestId = publicRequestId.ToString(),
+                        StatusCode = tokenResult?.StatusCode,
+                        ReqLogId = requestId
+                    };
+
+                }
+
+                return new OutputModel
+                {
+                    StatusCode = tokenResult.StatusCode,
+                    RequestId = tokenResult.recId,
+                    Content = tokenResult.ResultMessage,
+                    ReqLogId = requestId
+                };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Exception occurred while {nameof(GetTokenAsync)}");
+                throw new RamzNegarException(ErrorCode.AastanApiError,
+                    $"Exception occurred while: {nameof(GetTokenAsync)} => {ErrorCode.AastanApiError.GetDisplayName()}");
             }
         }
 

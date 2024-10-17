@@ -1,5 +1,6 @@
-﻿using AasanApis.Data.Entities;
+﻿using AastanApis.Data.Entities;
 using AasanApis.Models;
+using AastanApis.Models;
 using AutoMapper;
 
 namespace AasanApis.Infrastructure.Mapper

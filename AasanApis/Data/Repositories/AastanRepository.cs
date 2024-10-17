@@ -1,13 +1,13 @@
-﻿using AasanApis.Data.Entities;
-using AasanApis.ErrorHandling;
-using AasanApis.Exceptions;
-using AasanApis.Models;
+﻿using AastanApis.Data.Entities;
+using AastanApis.ErrorHandling;
+using AastanApis.Exceptions;
+using AastanApis.Models;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Extensions;
 using Oracle.ManagedDataAccess.Client;
 
-namespace AasanApis.Data.Repositories
+namespace AastanApis.Data.Repositories
 {
     public class AastanRepository : IAastanRepository
     {

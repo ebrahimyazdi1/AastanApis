@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
-namespace AasanApis.ErrorHandling
+namespace AastanApis.ErrorHandling
 {
     public enum ErrorCode
     {

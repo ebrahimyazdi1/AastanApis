@@ -1,6 +1,4 @@
-﻿
-
-namespace AasanApis.Models
+﻿namespace AastanApis.Models
 {
     public record MatchingEncryptReqDTO : BasePublicLogData
     {

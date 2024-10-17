@@ -1,4 +1,4 @@
-﻿using AasanApis.Data.Entities;
+﻿using AastanApis.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,4 +1,4 @@
-﻿namespace AasanApis.Models
+﻿namespace AastanApis.Models
 {
     public sealed class ShahkarRequestsLogDTO
     {

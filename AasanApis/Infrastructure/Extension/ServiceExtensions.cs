@@ -1,13 +1,10 @@
-﻿using AasanApis.Data.Repositories;
+﻿using AastanApis.Data.Repositories;
 using AasanApis.Models;
-using AasanApis.Services;
-using Microsoft.Extensions.Options;
+using AastanApis.Services;
 using Serilog;
 using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
-using System.Net.Http.Headers;
 using System.Reflection;
-using System.Text;
 
 namespace AasanApis.Infrastructure.Extension
 {

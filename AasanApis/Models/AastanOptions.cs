@@ -5,6 +5,9 @@
         public const string SectionName = "Aastan";
         public string BaseAddress { get; set; }
         public string TokenAddress { get; set; }
+        public string PgsbTokenAddress { get; set; }
+        public string PersonConsentInquiryAddress { get; set; }
+        public string CriminalRecordAddress { get; set; }
         public string RefreshTokenAddress { get; set; }
         public string MachingServiceAddress { get; set; }
         public string GrantType { get; set; }

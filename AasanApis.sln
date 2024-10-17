@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33927.249
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AasanApis", "AasanApis\AasanApis.csproj", "{569F9B3B-DDA1-452B-B719-0EE9DD687BBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AastanApis", "AasanApis\AastanApis.csproj", "{569F9B3B-DDA1-452B-B719-0EE9DD687BBE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F5DBD273-E036-4DAF-A3BC-CCD9B7ED9EEA}"
 EndProject

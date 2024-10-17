@@ -1,7 +1,7 @@
-﻿using AasanApis.Data;
+﻿using AastanApis.Data;
 using AasanApis.Infrastructure.Extension;
 using AasanApis.Models;
-using AasanApis.Services;
+using AastanApis.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;

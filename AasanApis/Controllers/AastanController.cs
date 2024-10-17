@@ -1,9 +1,10 @@
-﻿using AasanApis.ErrorHandling;
-using AasanApis.Exceptions;
-using AasanApis.Filters;
+﻿using AasanApis.Filters;
 using AasanApis.Infrastructure;
 using AasanApis.Models;
-using AasanApis.Services;
+using AastanApis.ErrorHandling;
+using AastanApis.Exceptions;
+using AastanApis.Models;
+using AastanApis.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,12 +19,12 @@ namespace AasanApis.Controllers
     {
         private readonly ILogger<AastanController> _logger;
         private BaseLog _baseLog { get; }
-        private IAastanService _astanService { get; }
-        public AastanController(ILogger<AastanController> logger, BaseLog baseLog, IAastanService astanService)
+        private IAastanService AastanService { get; }
+        public AastanController(ILogger<AastanController> logger, BaseLog baseLog, IAastanService aastanService)
         {
             _logger = logger;
             _baseLog = baseLog;
-            _astanService = astanService;
+            AastanService = aastanService;
         }
 
         [AllowAnonymous]
@@ -33,7 +34,7 @@ namespace AasanApis.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(TokenResDTO))]
         public async Task<ActionResult<TokenResDTO>> AastanGetToken(BasicDataReq basePublicLog)
         {
-            var result = await _astanService.GetTokenAsync(basePublicLog);
+            var result = await AastanService.GetTokenAsync(basePublicLog);
             try
             {
                 if (result.StatusCode != "OK")
@@ -59,7 +60,7 @@ namespace AasanApis.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(RefreshTokenResDTO))]
         public async Task<ActionResult<RefreshTokenResDTO>> AastanGetRefreshToken(RefreshTokenReqDTO refreshTokenReq)
         {
-            var result = await _astanService.GetRefreshTokenAsync(refreshTokenReq);
+            var result = await AastanService.GetRefreshTokenAsync(refreshTokenReq);
             try
             {
                 if (result.StatusCode != "OK")
@@ -85,7 +86,7 @@ namespace AasanApis.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(MatchingEncryptResDTO))]
         public async Task<ActionResult<MatchingEncryptResDTO>> AastanMatchingEncrypted(MatchingEncryptReqDTO matchingEncryptReq)
         {
-            var result = await _astanService.GetMatchingEncryptedAsync(matchingEncryptReq);
+            var result = await AastanService.GetMatchingEncryptedAsync(matchingEncryptReq);
             try
             {
                 if (result.StatusCode != "OK")

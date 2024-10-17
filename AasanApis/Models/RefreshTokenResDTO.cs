@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace AasanApis.Models
+namespace AastanApis.Models
 {
     public class RefreshTokenResDTO
     {

@@ -1,7 +1,7 @@
 ﻿using JsonWebToken;
 using Newtonsoft.Json;
 
-namespace AasanApis.Services
+namespace AastanApis.Services
 {
     public static class JWESignManagement
     {

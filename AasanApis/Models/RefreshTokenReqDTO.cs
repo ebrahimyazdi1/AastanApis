@@ -1,6 +1,6 @@
 ﻿
 
-namespace AasanApis.Models
+namespace AastanApis.Models
 {
     public record RefreshTokenReqDTO : BasePublicLogData
     {

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace AasanApis.Migrations
+namespace AastanApis.Migrations
 {
     /// <inheritdoc />
     public partial class update_shahkarRequetLogs : Migration

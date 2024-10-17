@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AasanApis.Migrations
+namespace AastanApis.Migrations
 {
     /// <inheritdoc />
     public partial class adding_ExpireDateTime : Migration

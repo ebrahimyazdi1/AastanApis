@@ -1,9 +1,7 @@
-﻿
-using AasanApis.Data.Entities;
-using AasanApis.Models;
+﻿using AastanApis.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace AasanApis.Data
+namespace AastanApis.Data
 {
     public class AastanDbContext : DbContext
     {

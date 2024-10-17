@@ -1,10 +1,9 @@
-﻿
-using AasanApis.ErrorHandling;
+﻿using AastanApis.ErrorHandling;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Extensions;
 using Newtonsoft.Json;
 
-namespace AasanApis.Infrastructure.Extension
+namespace AastanApis.Infrastructure.Extension
 {
     public class ApiResult
     {
