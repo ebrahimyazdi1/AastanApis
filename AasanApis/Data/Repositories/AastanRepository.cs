@@ -97,8 +97,34 @@ namespace AastanApis.Data.Repositories
                 throw new RamzNegarException(ErrorCode.AastanTokenApiError,
                     $"Exception occurred while: {nameof(AddOrUpdateTokenAsync)}  => {ErrorCode.AastanTokenApiError.GetDisplayName()}");
             }
+        }
 
+        public async Task AddOrUpdatePgsbTokenAsync(string? accessToken)
+        {
+            var accessTokenEntity = _dbContext.AccessTokens.SingleOrDefault(i => i.Id == "11");
+            if (accessTokenEntity is null)
+            {
+                accessTokenEntity = new AccessTokenEntity
+                {
+                    Id = "11",
+                    TokenName = "AastanPgsbToken"
+                };
+                await _dbContext.AccessTokens.AddAsync(accessTokenEntity).ConfigureAwait(false);
+            }
+            accessTokenEntity.AccessToken = accessToken;
+            accessTokenEntity.TokenDateTime = DateTime.Now;
 
+            try
+            {
+                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message,
+                    $"{nameof(AddOrUpdatePgsbTokenAsync)} -> applyUpdateToken in AddOrUpdatePgsbTokenAsync couldn't update.");
+                throw new RamzNegarException(ErrorCode.AastanTokenApiError,
+                    $"Exception occurred while: {nameof(AddOrUpdatePgsbTokenAsync)}  => {ErrorCode.AastanTokenApiError.GetDisplayName()}");
+            }
         }
 
         public async Task InsertShahkarRequestsLog(ShahkarRequestsLogDTO shahkarRequestsLogDTO)
@@ -171,6 +197,15 @@ namespace AastanApis.Data.Repositories
                 return tokenEntity;
             }
             return new ShahkarRequestsLogEntity();
+        }
+
+        public async Task<string?> FindPsgbAccessToken()
+        {
+            var tokenEntity = await _dbContext.AccessTokens
+                .AsNoTracking()
+                .SingleAsync(x => x.Id == "11");
+
+            return tokenEntity.TokenName is "AastanPgsbToken" ? tokenEntity.AccessToken : null;
         }
         public async Task<string> FindToken()
         {

@@ -43,7 +43,19 @@ namespace AasanApis.Infrastructure
                          RequestId, codeProvider?.SafeReponseCode.ToString()));
             return ServiceHelperExtension.GenerateApiErrorResponse<ErrorResult>(codeProvider);
         }
-        public async Task<TResponse> TransferSendAsync<TRequest, TResponse>(string uriString, HttpMethod method, TRequest request,
+
+        public ErrorResult ApiResponseFailByPSGBCodeProvider<T>(string response, string statusCode, string RequestId, string publicReqId) where T : new()
+        {
+            ErrorCodesProvider codeProvider = new ErrorCodesProvider();
+            codeProvider = codeProvider.errorCodesResponseResult(statusCode.ToString());
+            _repository.InsertAastanResponseLog(new AastanResponseLogDTO
+               (publicReqId, Convert.ToString(response), codeProvider.OutReponseCode.ToString(),
+                         RequestId, codeProvider.SafeReponseCode.ToString()));
+
+            return ServiceHelperExtension.GenerateApiErrorResponse<ErrorResult>(codeProvider);
+        }
+
+            public async Task<TResponse> TransferSendAsync<TRequest, TResponse>(string uriString, HttpMethod method, TRequest request,
             FormUrlEncodedContent? encodedContent, [CallerMemberName] string callerMethodName = null)
         where TResponse : ErrorResult, new() where TRequest : class
         {

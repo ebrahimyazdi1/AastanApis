@@ -7,8 +7,6 @@ using AastanApis.ErrorHandling;
 using AastanApis.Exceptions;
 using AastanApis.Models;
 using Microsoft.OpenApi.Extensions;
-using System.Net.Http;
-using System.Text;
 
 namespace AastanApis.Services
 {
@@ -218,7 +216,7 @@ namespace AastanApis.Services
                 var publicRequestId = _httpContextAccessor.HttpContext.Items["RequestId"] = basePublicLogData.PublicLogData.PublicReqId;
 
                 var tokenResult = await _client.GetPgsbTokenAsync();
-                
+
                 if (tokenResult is null && !tokenResult.IsSuccess)
                 {
                     return new OutputModel
@@ -228,16 +226,17 @@ namespace AastanApis.Services
                         StatusCode = tokenResult?.StatusCode,
                         ReqLogId = requestId
                     };
-
                 }
-                await _repository.AddOrUpdateTokenAsync(tokenResult.access_token);
-                var tokenOutput = _mapper.Map<TokenResDTO>(tokenResult);
+
+                await _repository.AddOrUpdatePgsbTokenAsync(tokenResult.AccessToken);
+                var tokenOutput = _mapper.Map<PgsbTokenResDto>(tokenResult);
 
                 return new OutputModel
                 {
                     Content = JsonSerializer.Serialize(tokenOutput),
                     RequestId = publicRequestId.ToString(),
                     StatusCode = tokenResult.StatusCode,
+                    ReqLogId = requestId
                 };
             }
             catch (Exception e)
@@ -252,22 +251,22 @@ namespace AastanApis.Services
         {
             try
             {
-                _logger.LogInformation($"{nameof(GetTokenAsync)} request sent - input is : \r\n {request}");
+                _logger.LogInformation($"{nameof(PostConsentInquiryAsync)} request sent - input is : \r\n {request}");
                 var aastanRequest = new AastanRequestLogDTO(request.PublicLogData.PublicReqId, request.ToString(),
                     request.PublicLogData.UserId, request.PublicLogData.PublicAppId, request.PublicLogData.ServiceId);
-
                 var requestId = await _repository.InsertAastanRequestLog(aastanRequest);
                 var publicRequestId = _httpContextAccessor.HttpContext.Items["RequestId"] = request.PublicLogData.PublicReqId;
 
-                var tokenResult = await _client.PostConsentInquiryAsync(request);
+                var consentResult = await _client.PostConsentInquiryAsync(request);
+                var result = _mapper.Map<ConsentInquiryResDto>(consentResult);
 
-                if (tokenResult is null && !tokenResult.IsSuccess)
+                if (consentResult is null && !consentResult.IsSuccess)
                 {
                     return new OutputModel
                     {
-                        Content = JsonSerializer.Serialize(tokenResult?.ResultMessage),
+                        Content = JsonSerializer.Serialize(result),
                         RequestId = publicRequestId.ToString(),
-                        StatusCode = tokenResult?.StatusCode,
+                        StatusCode = consentResult?.StatusCode,
                         ReqLogId = requestId
                     };
 
@@ -275,17 +274,58 @@ namespace AastanApis.Services
 
                 return new OutputModel
                 {
-                    StatusCode = tokenResult.StatusCode,
-                    RequestId = tokenResult.recId,
-                    Content = tokenResult.ResultMessage,
+                    StatusCode = consentResult.StatusCode,
+                    RequestId = publicRequestId.ToString(),
+                    Content = JsonSerializer.Serialize(result),
                     ReqLogId = requestId
                 };
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Exception occurred while {nameof(GetTokenAsync)}");
+                _logger.LogError(e, $"Exception occurred while {nameof(PostConsentInquiryAsync)}");
                 throw new RamzNegarException(ErrorCode.AastanApiError,
-                    $"Exception occurred while: {nameof(GetTokenAsync)} => {ErrorCode.AastanApiError.GetDisplayName()}");
+                    $"Exception occurred while: {nameof(PostConsentInquiryAsync)} => {ErrorCode.AastanApiError.GetDisplayName()}");
+            }
+        }
+
+        public async Task<OutputModel> PostCriminalRecordAsync(CriminalRecordReqDto criminalRecordRequest)
+        {
+            try
+            {
+                _logger.LogInformation($"{nameof(PostCriminalRecordAsync)} request sent - input is : \r\n {criminalRecordRequest}");
+                var aastanRequest = new AastanRequestLogDTO(criminalRecordRequest.PublicLogData.PublicReqId, criminalRecordRequest.ToString(),
+                    criminalRecordRequest.PublicLogData.UserId, criminalRecordRequest.PublicLogData.PublicAppId, criminalRecordRequest.PublicLogData.ServiceId);
+                var requestId = await _repository.InsertAastanRequestLog(aastanRequest);
+                var publicRequestId = _httpContextAccessor.HttpContext.Items["RequestId"] = criminalRecordRequest.PublicLogData.PublicReqId;
+
+                var criminalRecord = await _client.PostCriminalRecordAsync(criminalRecordRequest);
+                var result = _mapper.Map<CriminalRecordResDto>(criminalRecord);
+
+                if (criminalRecord is null && !criminalRecord.IsSuccess)
+                {
+                    return new OutputModel
+                    {
+                        Content = JsonSerializer.Serialize(result),
+                        RequestId = publicRequestId.ToString(),
+                        StatusCode = result.Result,
+                        ReqLogId = requestId
+                    };
+
+                }
+
+                return new OutputModel
+                {
+                    StatusCode = criminalRecord.StatusCode,
+                    RequestId = criminalRecordRequest.PublicLogData.PublicReqId,
+                    Content = JsonSerializer.Serialize(criminalRecord),
+                    ReqLogId = requestId
+                };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Exception occurred while {nameof(PostCriminalRecordAsync)}");
+                throw new RamzNegarException(ErrorCode.AastanApiError,
+                    $"Exception occurred while: {nameof(PostCriminalRecordAsync)} => {ErrorCode.AastanApiError.GetDisplayName()}");
             }
         }
 

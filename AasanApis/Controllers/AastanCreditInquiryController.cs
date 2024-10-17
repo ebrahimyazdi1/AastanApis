@@ -26,13 +26,13 @@ public class AastanCreditInquiryController : Controller
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PgsbTokenRes))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(PgsbTokenRes))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(PgsbTokenRes))]
-    public async Task<ActionResult<PgsbTokenRes>> GetToken(BasePublicLogData basePublicLogData)
+    public async Task<ActionResult<PgsbTokenResDto>> GetToken(BasePublicLogData basePublicLogData)
     {
         var result = await AastanService.GetPgsbTokenAsync(basePublicLogData);
         try
         {
             if (result.StatusCode is "OK")
-                return Ok(_baseLog.ApiResponseSuccessByCodeProvider<PgsbTokenRes>(result.Content, result.StatusCode,
+                return Ok(_baseLog.ApiResponseSuccessByCodeProvider<PgsbTokenResDto>(result.Content, result.StatusCode,
                     result.ReqLogId, result.RequestId));
 
             _logger.LogError($"{nameof(GetToken)} not-success request - input \r\n" +
@@ -49,7 +49,7 @@ public class AastanCreditInquiryController : Controller
     }
 
     [AllowAnonymous]
-    [HttpPost("Consent-Inquiry")]
+    [HttpPost("consent-inquiry")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ConsentInquiryResDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ConsentInquiryResDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ConsentInquiryResDto))]
@@ -72,6 +72,33 @@ public class AastanCreditInquiryController : Controller
             _logger.LogError(ex, $"Exception occurred while {nameof(PostConsentInquiry)}");
             throw new RamzNegarException(ErrorCode.InternalError, $"Exception occurred while:" +
                                                                   $" {nameof(PostConsentInquiry)} => {ex.Message}");
+        }
+    }
+
+    [AllowAnonymous]
+    [HttpPost("criminal-record")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CriminalRecordResDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(CriminalRecordResDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(CriminalRecordResDto))]
+    public async Task<ActionResult<CriminalRecordResDto>> PostCriminalRecordAsync(CriminalRecordReqDto request)
+    {
+        var result = await AastanService.PostCriminalRecordAsync(request);
+        try
+        {
+            if (result.StatusCode is "OK")
+                return Ok(_baseLog.ApiResponseSuccessByCodeProvider<CriminalRecordResDto>(result.Content, result.StatusCode,
+                    result.ReqLogId, result.RequestId));
+
+            _logger.LogError($"{nameof(PostConsentInquiry)} not-success request - input \r\n" +
+                             $"response:{result.StatusCode}-{result.Content}");
+            return BadRequest(_baseLog.ApiResponseFailByPSGBCodeProvider<CriminalRecordResDto>(result.Content,
+                result.StatusCode, result.ReqLogId, result.RequestId));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Exception occurred while {nameof(PostCriminalRecordAsync)}");
+            throw new RamzNegarException(ErrorCode.InternalError, $"Exception occurred while:" +
+                                                                  $" {nameof(PostCriminalRecordAsync)} => {ex.Message}");
         }
     }
 }

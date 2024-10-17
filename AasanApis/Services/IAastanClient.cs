@@ -9,7 +9,7 @@ namespace AastanApis.Services
         Task<RefreshTokenRes> GetRefreshTokenAsync(RefreshTokenReq refreshTokenReq);
         Task<MatchingEncryptRes> GetMatchingEncryptedAsync(MatchingEncryptReq matchingEncryptReq);
         Task<PgsbTokenRes> GetPgsbTokenAsync();
-        Task<ConsentInquiryResDto> PostConsentInquiryAsync(ConsentInquiryReqDto consentInquiryRequest);
-        Task<CriminalRecordResDto> PostCriminalRecordAsync(CriminalRecordReqDto criminalRecordRequest);
+        Task<ConsentInquiryRes> PostConsentInquiryAsync(ConsentInquiryReqDto consentInquiryRequest);
+        Task<CriminalRecordRes> PostCriminalRecordAsync(CriminalRecordReqDto criminalRecordRequest);
     }
 }

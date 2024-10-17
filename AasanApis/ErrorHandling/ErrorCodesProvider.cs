@@ -434,8 +434,6 @@
                 SafeReponseMesageDecription = " خطای مورد نظر در لیست کد خطاهای رمزنگار سیف یافت نشد"
 
             },
-            //  _ => throw new NotImplementedException()
-
 
         };
 

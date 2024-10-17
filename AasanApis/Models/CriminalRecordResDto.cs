@@ -1,22 +1,10 @@
-﻿using AastanApis.ErrorHandling;
-using System.Text.Json.Serialization;
+﻿namespace AastanApis.Models;
 
-namespace AastanApis.Models;
-
-public class CriminalRecordResDto : ErrorResult
+public record CriminalRecordResDto
 {
-    [JsonPropertyName("checkRegisterCode")]
-    public string? checkRegisterCode { get; init; }
-    
-    [JsonPropertyName("checkRegisterMessage")]
-    public string? checkRegisterMessage { get; init; }
-
-    [JsonPropertyName("criminalRecordResult")]
-    public string? criminalRecordResult { get; init; }
-
-    [JsonPropertyName("criminalRecordResultMessage")]
-    public string? criminalRecordResultMessage { get; init; }
-
-    [JsonPropertyName("result")]
-    public string? result { get; init; }
+    public string?  CheckRegisterCode { get; init; }
+    public string? CheckRegisterMessage { get; init; }
+    public string? CriminalRecordResult { get; init; } 
+    public string? CriminalRecordResultMessage { get; init; } 
+    public string? Result { get; init; }
 }

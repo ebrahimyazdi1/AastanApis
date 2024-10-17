@@ -6,17 +6,17 @@ namespace AastanApis.Models;
 public class PgsbTokenRes : ErrorResult
 {
     [JsonPropertyName("access_token")]
-    public string? access_token { get; init; }
+    public string? AccessToken { get; init; }
     
     [JsonPropertyName("token_type")]
-    public string? token_type { get; init; }
+    public string? TokenType { get; init; }
 
     [JsonPropertyName("refresh_token")]
-    public string? refresh_token { get; init; }
+    public string? RefreshToken { get; init; }
 
     [JsonPropertyName("expires_in")]
-    public string? expires_in { get; init; }
+    public string? ExpiresIn { get; init; }
 
     [JsonPropertyName("scope")]
-    public string? scope { get; init; }
+    public string? Scope { get; init; }
 }

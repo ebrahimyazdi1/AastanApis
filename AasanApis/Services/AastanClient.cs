@@ -81,8 +81,8 @@ namespace AastanApis.Services
             {
                 var loginUri = new Uri(_astanOptions.PgsbTokenAddress, UriKind.RelativeOrAbsolute);
                 var request = new HttpRequestMessage(HttpMethod.Post, loginUri);
-                var accToken = await _repository.FindToken().ConfigureAwait(false);
 
+                var accToken = await _repository.FindToken().ConfigureAwait(false);
                 if (accToken is null || string.IsNullOrWhiteSpace(accToken))
                 {
                     _logger.LogError($"An appropriate refreshToken not found -> {ErrorCode.NotFound.GetDisplayName()}");
@@ -93,8 +93,8 @@ namespace AastanApis.Services
 
                 var response = await _httpClient.SendAsync(request)
                     .ConfigureAwait(false);
-
                 var responseBodyJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
                 if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation($"{nameof(GetPgsbTokenAsync)} -> the reason is {responseBodyJson}");
@@ -105,7 +105,7 @@ namespace AastanApis.Services
                     JsonSerializer.Deserialize<PgsbTokenRes>(responseBodyJson,
                         ServiceHelperExtension.JsonSerializerOptions);
 
-                if (string.IsNullOrWhiteSpace(tokenOutput?.access_token))
+                if (string.IsNullOrWhiteSpace(tokenOutput?.AccessToken))
                 {
                     _logger.LogError($"In the {nameof(GetPgsbTokenAsync)} access token is null-> {responseBodyJson}");
                     return ServiceHelperExtension.GenerateErrorMethodResponse<PgsbTokenRes>(ErrorCode.NotFound);
@@ -113,11 +113,11 @@ namespace AastanApis.Services
 
                 return new PgsbTokenRes
                 {
-                 access_token   = tokenOutput.access_token,
-                 expires_in = tokenOutput.expires_in,
-                 refresh_token = tokenOutput.refresh_token,
-                 scope = tokenOutput.scope,
-                 token_type = tokenOutput.token_type
+                    AccessToken = tokenOutput.AccessToken,
+                    ExpiresIn = tokenOutput.ExpiresIn, 
+                    RefreshToken = tokenOutput.RefreshToken, 
+                    Scope = tokenOutput.Scope,
+                    TokenType = tokenOutput.TokenType
                 };
             }
             catch (Exception e)
@@ -128,7 +128,7 @@ namespace AastanApis.Services
             }
         }
 
-        public async Task<ConsentInquiryResDto> PostConsentInquiryAsync(ConsentInquiryReqDto consentInquiryRequest)
+        public async Task<ConsentInquiryRes> PostConsentInquiryAsync(ConsentInquiryReqDto consentInquiryRequest)
         {
             try
             {
@@ -141,7 +141,6 @@ namespace AastanApis.Services
                     throw new RamzNegarException(ErrorCode.TokenNotFound,
                                   ErrorCode.AastanApiError.GetDisplayName());
                 }
-
                 request.AddAastanCommonHeader(accToken, _astanOptions);
                 request.Content =
                       new StringContent(
@@ -150,17 +149,16 @@ namespace AastanApis.Services
 
                 var response = await _httpClient.SendAsync(request)
                 .ConfigureAwait(false);
-
                 var responseBodyJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation($"{nameof(PostConsentInquiryAsync)} -> the reason is {responseBodyJson}");
-                    return ServiceHelperExtension.GenerateErrorMethodResponse<ConsentInquiryResDto>(ErrorCode.AastanApiError);
+                    return ServiceHelperExtension.GenerateErrorMethodResponse<ConsentInquiryRes>(ErrorCode.AastanApiError);
                 }
 
-                var responseDeserialize = JsonSerializer.Deserialize<ConsentInquiryResDto>(responseBodyJson,
+                var responseDeserialize = JsonSerializer.Deserialize<ConsentInquiryRes>(responseBodyJson,
                      ServiceHelperExtension.JsonSerializerOptions);
-                responseDeserialize ??= new ConsentInquiryResDto { IsSuccess = true, StatusCode = response.StatusCode.ToString() };
+                responseDeserialize ??= new ConsentInquiryRes { IsSuccess = true, StatusCode = response.StatusCode.ToString() };
                 responseDeserialize.IsSuccess = true;
                 responseDeserialize.ResultMessage = responseBodyJson;
                 responseDeserialize.StatusCode = response.StatusCode.ToString();
@@ -176,21 +174,21 @@ namespace AastanApis.Services
             }
         }
 
-        public async Task<CriminalRecordResDto> PostCriminalRecordAsync(CriminalRecordReqDto criminalRecordRequest)
+        public async Task<CriminalRecordRes> PostCriminalRecordAsync(CriminalRecordReqDto criminalRecordRequest)
         {
             try
             {
                 var url = new Uri(_astanOptions.CriminalRecordAddress, UriKind.RelativeOrAbsolute);
                 var request = new HttpRequestMessage(HttpMethod.Post, url);
-                var accToken = await _repository.FindToken().ConfigureAwait(false);
-                if (accToken is null || string.IsNullOrWhiteSpace(accToken))
+                var psgbToken = await _repository.FindPsgbAccessToken().ConfigureAwait(false);
+                if (psgbToken is null || string.IsNullOrWhiteSpace(psgbToken))
                 {
                     _logger.LogError($"An appropriate refreshToken not found -> {ErrorCode.NotFound.GetDisplayName()}");
                     throw new RamzNegarException(ErrorCode.TokenNotFound,
                                   ErrorCode.AastanApiError.GetDisplayName());
                 }
 
-                request.AddAastanCommonHeader(accToken, _astanOptions);
+                request.AddAastanCommonHeader(psgbToken, _astanOptions);
                 request.Content =
                       new StringContent(
                           JsonSerializer.Serialize(criminalRecordRequest, ServiceHelperExtension.JsonSerializerOptions),
@@ -203,12 +201,12 @@ namespace AastanApis.Services
                 if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation($"{nameof(PostConsentInquiryAsync)} -> the reason is {responseBodyJson}");
-                    return ServiceHelperExtension.GenerateErrorMethodResponse<CriminalRecordResDto>(ErrorCode.AastanApiError);
+                    return ServiceHelperExtension.GenerateErrorMethodResponse<CriminalRecordRes>(ErrorCode.AastanApiError);
                 }
 
-                var responseDeserialize = JsonSerializer.Deserialize<CriminalRecordResDto>(responseBodyJson,
+                var responseDeserialize = JsonSerializer.Deserialize<CriminalRecordRes>(responseBodyJson,
                      ServiceHelperExtension.JsonSerializerOptions);
-                responseDeserialize ??= new CriminalRecordResDto { IsSuccess = true, StatusCode = response.StatusCode.ToString() };
+                responseDeserialize ??= new CriminalRecordRes { IsSuccess = true, StatusCode = response.StatusCode.ToString() };
                 responseDeserialize.IsSuccess = true;
                 responseDeserialize.ResultMessage = responseBodyJson;
                 responseDeserialize.StatusCode = response.StatusCode.ToString();
@@ -270,7 +268,6 @@ namespace AastanApis.Services
                     ResultMessage = responseBodyJson,
                     Scope = tokenOutput.Scope,
                     TokenType = tokenOutput.TokenType
-
                 };
             }
             catch (Exception e)

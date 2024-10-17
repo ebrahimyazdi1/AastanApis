@@ -16,5 +16,7 @@ namespace AastanApis.Data.Repositories
         Task<string> FindRefreshTokenById(string accessToken);
         Task<ShahkarRequestsLogEntity> FindAccessToken();
         Task<ShahkarRequestsLogEntity> UpdateShahkarRequestLogTokenAsync(TokenRes tokenRes, ShahkarRequestsLogEntity shahkarRequestsLogEntity);
+        Task AddOrUpdatePgsbTokenAsync(string? accessToken);
+        Task<string?> FindPsgbAccessToken();
     }
 }

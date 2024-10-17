@@ -1,13 +1,7 @@
-﻿using AastanApis.ErrorHandling;
-using System.Text.Json.Serialization;
+﻿namespace AastanApis.Models;
 
-namespace AastanApis.Models;
-
-public class ConsentInquiryResDto : ErrorResult
+public class ConsentInquiryResDto
 {
-    [JsonPropertyName("recId")]
-    public string? recId { get; init; }
-
-    [JsonPropertyName("status")]
-    public string? status { get; init; }
+    public string? RecId { get; init; }
+    public string? Status { get; init; }
 }

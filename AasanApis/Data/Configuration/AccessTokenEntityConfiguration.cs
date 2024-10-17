@@ -8,7 +8,6 @@ namespace AastanApis.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<AccessTokenEntity> builder)
         {
-
             builder.ToTable("NAJI_ACCESS_TOCKEN");
             builder.HasKey(entity => entity.Id);
             builder.HasIndex(entity => entity.Id).IsUnique(true);
@@ -16,8 +15,6 @@ namespace AastanApis.Data.Configuration
             builder.Property(entity => entity.Id).ValueGeneratedOnAdd();
             builder.Property(entity => entity.AccessToken).IsRequired().HasColumnName("accessTocken");
             builder.Property(entity => entity.TokenName).IsRequired();
-
-
         }
     }
 }
