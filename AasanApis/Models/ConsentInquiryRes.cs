@@ -6,7 +6,7 @@ namespace AastanApis.Models;
 public class ConsentInquiryRes : ErrorResult
 {
     [JsonPropertyName("recId")]
-    public string? RecId { get; init; }
+    public long? RecId { get; init; }
 
     [JsonPropertyName("status")]
     public string? Status { get; init; }

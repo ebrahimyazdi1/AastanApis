@@ -2,9 +2,9 @@
 
 public record CriminalRecordResDto
 {
-    public string?  CheckRegisterCode { get; init; }
-    public string? CheckRegisterMessage { get; init; }
-    public string? CriminalRecordResult { get; init; } 
-    public string? CriminalRecordResultMessage { get; init; } 
-    public string? Result { get; init; }
+    public int Result { get; init; }
+    public bool CheckRegisterCode { get; init; }
+    public string CriminalRecordResultMessage { get; init; }
+    public bool CriminalRecordResult { get; init; }
+    public string CheckRegisterMessage { get; init; }
 }

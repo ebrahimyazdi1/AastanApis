@@ -15,7 +15,7 @@ public class PgsbTokenRes : ErrorResult
     public string? RefreshToken { get; init; }
 
     [JsonPropertyName("expires_in")]
-    public string? ExpiresIn { get; init; }
+    public int? ExpiresIn { get; init; }
 
     [JsonPropertyName("scope")]
     public string? Scope { get; init; }

@@ -11,6 +11,9 @@ namespace AasanApis.Infrastructure.Mapper
         {
             CreateMap<RefreshTokenReqDTO, RefreshTokenReq>().ReverseMap();
             CreateMap<TokenResDTO, TokenRes>().ReverseMap();
+            CreateMap<PgsbTokenResDto,  PgsbTokenRes>().ReverseMap();
+            CreateMap<ConsentInquiryResDto, ConsentInquiryRes>().ReverseMap();
+            CreateMap<CriminalRecordResDto,  CriminalRecordRes>().ReverseMap();
             CreateMap<MatchingEncryptReqDTO, MatchingEncryptReq>().ReverseMap();
             CreateMap<ShahkarRequestsLogEntity,ShahkarRequestsLogDTO>().ReverseMap();
             CreateMap<RefreshTokenResDTO,RefreshTokenRes>().ReverseMap();
