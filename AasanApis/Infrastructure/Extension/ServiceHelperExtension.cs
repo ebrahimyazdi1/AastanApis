@@ -27,7 +27,7 @@ namespace AastanApis.Infrastructure.Extension
             Convert.ToBase64String(
               Encoding.ASCII.GetBytes($"{options.RadioUserName}:{options.RadioPassword}"));
             request.Headers.Add("Accept", "application/json");
-            request.Headers.Add("Token", Token);
+           // request.Headers.Add("Token", Token);
             request.Headers.Add("basicAuthorization", basicAuthorizationParam);
             var authenticationParam =
                   Convert.ToBase64String(

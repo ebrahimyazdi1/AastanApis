@@ -9,14 +9,14 @@ using Oracle.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace AasanApis.Migrations
+namespace AastanApis.Migrations
 {
     [DbContext(typeof(AastanDbContext))]
-    [Migration("20230930103345_adding_ExpireDateTime")]
-    partial class adding_ExpireDateTime
+    [Migration("20241019122559_CreditInquiryUpdated")]
+    partial class CreditInquiryUpdated
     {
         /// <inheritdoc />
-        protected void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,7 +25,7 @@ namespace AasanApis.Migrations
 
             OracleModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AasanApis.Data.Entities.AastanReqLog", b =>
+            modelBuilder.Entity("AastanApis.Data.Entities.AastanReqLog", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,7 +59,7 @@ namespace AasanApis.Migrations
                     b.ToTable("", (string)null);
                 });
 
-            modelBuilder.Entity("AasanApis.Data.Entities.AastanResLog", b =>
+            modelBuilder.Entity("AastanApis.Data.Entities.AastanResLog", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -93,7 +93,7 @@ namespace AasanApis.Migrations
                     b.ToTable("Aastan_LOG_RES", (string)null);
                 });
 
-            modelBuilder.Entity("AasanApis.Data.Entities.AccessTokenEntity", b =>
+            modelBuilder.Entity("AastanApis.Data.Entities.AccessTokenEntity", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -120,7 +120,7 @@ namespace AasanApis.Migrations
                     b.ToTable("NAJI_ACCESS_TOCKEN", (string)null);
                 });
 
-            modelBuilder.Entity("AasanApis.Data.Entities.ShahkarRequestsLogEntity", b =>
+            modelBuilder.Entity("AastanApis.Data.Entities.ShahkarRequestsLogEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -141,9 +141,8 @@ namespace AasanApis.Migrations
                     b.Property<DateTime>("ExpirationDateTime")
                         .HasColumnType("TIMESTAMP(7)");
 
-                    b.Property<string>("ExpireTimeInSecond")
-                        .IsRequired()
-                        .HasColumnType("NVARCHAR2(2000)");
+                    b.Property<long>("ExpireTimeInSecond")
+                        .HasColumnType("NUMBER(19)");
 
                     b.Property<string>("RefreshToken")
                         .IsRequired()
@@ -168,9 +167,9 @@ namespace AasanApis.Migrations
                     b.ToTable("Aastan_ShahkarRequestsLog", (string)null);
                 });
 
-            modelBuilder.Entity("AasanApis.Data.Entities.AastanResLog", b =>
+            modelBuilder.Entity("AastanApis.Data.Entities.AastanResLog", b =>
                 {
-                    b.HasOne("AasanApis.Data.Entities.AastanReqLog", "ReqLog")
+                    b.HasOne("AastanApis.Data.Entities.AastanReqLog", "ReqLog")
                         .WithMany("AastanResLogs")
                         .HasForeignKey("ReqLogId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -179,7 +178,7 @@ namespace AasanApis.Migrations
                     b.Navigation("ReqLog");
                 });
 
-            modelBuilder.Entity("AasanApis.Data.Entities.AastanReqLog", b =>
+            modelBuilder.Entity("AastanApis.Data.Entities.AastanReqLog", b =>
                 {
                     b.Navigation("AastanResLogs");
                 });

@@ -2,11 +2,11 @@
 
 public record CriminalRecordReqDto : BasePublicLogData
 {
-    public string? userNationalCode { get; init; }
-    public string? nationalCode { get; init; }
-    public string? organizationNationalCode { get; init; }
-    public string? postName { get; init; }
-    public string? organizationName { get; init; }
-    public string? mobileNumber { get; init; }
-    public string? registerCode { get; init; }
+    public required string UserNationalCode { get; init; }
+    public required string NationalCode { get; init; }
+    public required string OrganizationNationalCode { get; init; }
+    public required string PostName { get; init; }
+    public required string OrganizationName { get; init; }
+    public required string MobileNumber { get; init; }
+    public required string RegisterCode { get; init; }
 }

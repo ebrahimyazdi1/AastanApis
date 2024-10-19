@@ -3,11 +3,12 @@ using System;
 using AastanApis.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Oracle.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace AasanApis.Migrations
+namespace AastanApis.Migrations
 {
     [DbContext(typeof(AastanDbContext))]
     partial class AastanDbContextModelSnapshot : ModelSnapshot
@@ -21,7 +22,7 @@ namespace AasanApis.Migrations
 
             OracleModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AasanApis.Data.Entities.AastanReqLog", b =>
+            modelBuilder.Entity("AastanApis.Data.Entities.AastanReqLog", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,7 +56,7 @@ namespace AasanApis.Migrations
                     b.ToTable("Aastan_LOG_REQ", (string)null);
                 });
 
-            modelBuilder.Entity("AasanApis.Data.Entities.AastanResLog", b =>
+            modelBuilder.Entity("AastanApis.Data.Entities.AastanResLog", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -89,7 +90,7 @@ namespace AasanApis.Migrations
                     b.ToTable("Aastan_LOG_RES", (string)null);
                 });
 
-            modelBuilder.Entity("AasanApis.Data.Entities.AccessTokenEntity", b =>
+            modelBuilder.Entity("AastanApis.Data.Entities.AccessTokenEntity", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -116,7 +117,7 @@ namespace AasanApis.Migrations
                     b.ToTable("NAJI_ACCESS_TOCKEN", (string)null);
                 });
 
-            modelBuilder.Entity("AasanApis.Data.Entities.ShahkarRequestsLogEntity", b =>
+            modelBuilder.Entity("AastanApis.Data.Entities.ShahkarRequestsLogEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -163,9 +164,9 @@ namespace AasanApis.Migrations
                     b.ToTable("Aastan_ShahkarRequestsLog", (string)null);
                 });
 
-            modelBuilder.Entity("AasanApis.Data.Entities.AastanResLog", b =>
+            modelBuilder.Entity("AastanApis.Data.Entities.AastanResLog", b =>
                 {
-                    b.HasOne("AasanApis.Data.Entities.AastanReqLog", "ReqLog")
+                    b.HasOne("AastanApis.Data.Entities.AastanReqLog", "ReqLog")
                         .WithMany("AastanResLogs")
                         .HasForeignKey("ReqLogId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -174,7 +175,7 @@ namespace AasanApis.Migrations
                     b.Navigation("ReqLog");
                 });
 
-            modelBuilder.Entity("AasanApis.Data.Entities.AastanReqLog", b =>
+            modelBuilder.Entity("AastanApis.Data.Entities.AastanReqLog", b =>
                 {
                     b.Navigation("AastanResLogs");
                 });

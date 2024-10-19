@@ -204,7 +204,7 @@ namespace AastanApis.Services
             }
         }
 
-        public async Task<OutputModel> GetPgsbTokenAsync(BasePublicLogData basePublicLogData)
+        public async Task<OutputModel> GetPgsbTokenAsync(BasicDataReq basePublicLogData)
         {
             try
             {
@@ -235,7 +235,7 @@ namespace AastanApis.Services
                 {
                     Content = JsonSerializer.Serialize(tokenOutput),
                     RequestId = publicRequestId.ToString(),
-                    StatusCode = tokenResult.StatusCode,
+                    StatusCode = tokenResult?.StatusCode,
                     ReqLogId = requestId
                 };
             }
@@ -307,7 +307,7 @@ namespace AastanApis.Services
                     {
                         Content = JsonSerializer.Serialize(result),
                         RequestId = publicRequestId.ToString(),
-                        StatusCode = result.Result,
+                        StatusCode = result.Result.ToString(),
                         ReqLogId = requestId
                     };
 

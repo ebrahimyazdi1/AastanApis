@@ -5,18 +5,9 @@ namespace AastanApis.Models;
 
 public class CriminalRecordRes : ErrorResult
 {
-    [JsonPropertyName("checkRegisterCode")]
-    public string? checkRegisterCode { get; init; }
-    
-    [JsonPropertyName("checkRegisterMessage")]
-    public string? checkRegisterMessage { get; init; }
-
-    [JsonPropertyName("criminalRecordResult")]
-    public string? criminalRecordResult { get; init; }
-
-    [JsonPropertyName("criminalRecordResultMessage")]
-    public string? criminalRecordResultMessage { get; init; }
-
-    [JsonPropertyName("result")]
-    public string? result { get; init; }
+    public int result { get; init; }
+    public bool CheckRegisterCode { get; init; }
+    public string CriminalRecordResultMessage { get; init; }
+    public bool CriminalRecordResult { get; init; }
+    public string CheckRegisterMessage { get; init; }
 }

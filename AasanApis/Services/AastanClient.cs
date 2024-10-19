@@ -9,6 +9,7 @@ using AastanApis.ErrorHandling;
 using AastanApis.Exceptions;
 using AastanApis.Infrastructure.Extension;
 using AastanApis.Models;
+using Newtonsoft.Json.Linq;
 
 namespace AastanApis.Services
 {
@@ -114,10 +115,12 @@ namespace AastanApis.Services
                 return new PgsbTokenRes
                 {
                     AccessToken = tokenOutput.AccessToken,
-                    ExpiresIn = tokenOutput.ExpiresIn, 
-                    RefreshToken = tokenOutput.RefreshToken, 
+                    ExpiresIn = tokenOutput.ExpiresIn,
+                    RefreshToken = tokenOutput.RefreshToken,
                     Scope = tokenOutput.Scope,
-                    TokenType = tokenOutput.TokenType
+                    TokenType = tokenOutput.TokenType,
+                    StatusCode = response.StatusCode.ToString(),
+                    ResultMessage = responseBodyJson
                 };
             }
             catch (Exception e)
@@ -158,12 +161,12 @@ namespace AastanApis.Services
 
                 var responseDeserialize = JsonSerializer.Deserialize<ConsentInquiryRes>(responseBodyJson,
                      ServiceHelperExtension.JsonSerializerOptions);
+
                 responseDeserialize ??= new ConsentInquiryRes { IsSuccess = true, StatusCode = response.StatusCode.ToString() };
                 responseDeserialize.IsSuccess = true;
                 responseDeserialize.ResultMessage = responseBodyJson;
                 responseDeserialize.StatusCode = response.StatusCode.ToString();
                 return responseDeserialize;
-
             }
             catch (Exception ex)
             {
@@ -180,38 +183,57 @@ namespace AastanApis.Services
             {
                 var url = new Uri(_astanOptions.CriminalRecordAddress, UriKind.RelativeOrAbsolute);
                 var request = new HttpRequestMessage(HttpMethod.Post, url);
+
+                // Retrieve the dynamic token
                 var psgbToken = await _repository.FindPsgbAccessToken().ConfigureAwait(false);
+
+                // Encode authorization credentials
+                var authenticationParam = Convert.ToBase64String(
+                    Encoding.ASCII.GetBytes($"{_astanOptions.AstanUserName}:{_astanOptions.AstanPassword}")
+                );
+                request.Headers.Add("Authorization", "Basic " + authenticationParam);
+                request.Headers.Add("Token", psgbToken);
+
                 if (psgbToken is null || string.IsNullOrWhiteSpace(psgbToken))
                 {
                     _logger.LogError($"An appropriate refreshToken not found -> {ErrorCode.NotFound.GetDisplayName()}");
-                    throw new RamzNegarException(ErrorCode.TokenNotFound,
-                                  ErrorCode.AastanApiError.GetDisplayName());
+                    throw new RamzNegarException(ErrorCode.TokenNotFound, ErrorCode.AastanApiError.GetDisplayName());
                 }
 
-                request.AddAastanCommonHeader(psgbToken, _astanOptions);
-                request.Content =
-                      new StringContent(
-                          JsonSerializer.Serialize(criminalRecordRequest, ServiceHelperExtension.JsonSerializerOptions),
-                  Encoding.UTF8, "application/json");
+                // Create the client request using provided input (no hardcoded values)
+                var clientRequest = new ClientCriminalRecordReqDto
+                {
+                    MobileNumber = criminalRecordRequest.MobileNumber,
+                    NationalCode = criminalRecordRequest.NationalCode,
+                    OrganiationName = criminalRecordRequest.OrganizationName,
+                    OrganizationNationalCode = criminalRecordRequest.OrganizationNationalCode,
+                    PostName = criminalRecordRequest.PostName,
+                    RegisterCode = criminalRecordRequest.RegisterCode,
+                    UserNationalCode = criminalRecordRequest.UserNationalCode
+                };
 
-                var response = await _httpClient.SendAsync(request)
-                .ConfigureAwait(false);
+                // Serialize request data to JSON
+                request.Content = new StringContent(JsonSerializer.Serialize(clientRequest), Encoding.UTF8, "application/json");
 
+                var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
                 var responseBodyJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
                 if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation($"{nameof(PostConsentInquiryAsync)} -> the reason is {responseBodyJson}");
                     return ServiceHelperExtension.GenerateErrorMethodResponse<CriminalRecordRes>(ErrorCode.AastanApiError);
                 }
 
+                // Deserialize the response body
                 var responseDeserialize = JsonSerializer.Deserialize<CriminalRecordRes>(responseBodyJson,
-                     ServiceHelperExtension.JsonSerializerOptions);
+                    ServiceHelperExtension.JsonSerializerOptions);
+
                 responseDeserialize ??= new CriminalRecordRes { IsSuccess = true, StatusCode = response.StatusCode.ToString() };
                 responseDeserialize.IsSuccess = true;
                 responseDeserialize.ResultMessage = responseBodyJson;
                 responseDeserialize.StatusCode = response.StatusCode.ToString();
-                return responseDeserialize;
 
+                return responseDeserialize;
             }
             catch (Exception ex)
             {
@@ -260,11 +282,11 @@ namespace AastanApis.Services
                 }
                 return new TokenRes
                 {
-                    AccessToken = tokenOutput?.AccessToken ?? "",
+                    AccessToken = tokenOutput.AccessToken,
                     ExpireTimesInSecond = tokenOutput.ExpireTimesInSecond,
                     IsSuccess = response.IsSuccessStatusCode,
                     StatusCode = response.StatusCode.ToString(),
-                    RefreshToken = tokenOutput.RefreshToken ?? "",
+                    RefreshToken = tokenOutput.RefreshToken,
                     ResultMessage = responseBodyJson,
                     Scope = tokenOutput.Scope,
                     TokenType = tokenOutput.TokenType

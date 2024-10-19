@@ -7,7 +7,7 @@ namespace AastanApis.Services
         Task<OutputModel> GetTokenAsync(BasePublicLogData basePublicLog);
         Task<OutputModel> GetRefreshTokenAsync(RefreshTokenReqDTO refreshTokenReq);
         Task<OutputModel> GetMatchingEncryptedAsync(MatchingEncryptReqDTO matchingEncryptReq);
-        Task<OutputModel> GetPgsbTokenAsync(BasePublicLogData basePublicLogData);
+        Task<OutputModel> GetPgsbTokenAsync(BasicDataReq basePublicLogData);
         Task<OutputModel> PostConsentInquiryAsync(ConsentInquiryReqDto request);
         Task<OutputModel> PostCriminalRecordAsync(CriminalRecordReqDto criminalRecordRequest);
     }

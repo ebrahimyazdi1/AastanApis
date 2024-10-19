@@ -53,7 +53,7 @@ namespace AasanApis.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Aastan_LOG_REQ", (string)null);
+                    b.ToTable("", (string)null);
                 });
 
             modelBuilder.Entity("AasanApis.Data.Entities.AastanResLog", b =>
