@@ -18,5 +18,6 @@ namespace AastanApis.Data.Repositories
         Task<ShahkarRequestsLogEntity> UpdateShahkarRequestLogTokenAsync(TokenRes tokenRes, ShahkarRequestsLogEntity shahkarRequestsLogEntity);
         Task AddOrUpdatePgsbTokenAsync(string? accessToken);
         Task<string?> FindPsgbAccessToken();
+        Task<string> FindAastanAccessToken();
     }
 }

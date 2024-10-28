@@ -207,6 +207,16 @@ namespace AastanApis.Data.Repositories
 
             return tokenEntity.TokenName is "AastanPgsbToken" ? tokenEntity.AccessToken : null;
         }
+
+        public async Task<string> FindAastanAccessToken()
+        {
+            var tokenEntity = await _dbContext.AccessTokens
+                .AsNoTracking()
+                .SingleAsync(x => x.Id == "7");
+
+            return tokenEntity.AccessToken;
+        }
+
         public async Task<string> FindToken()
         {
             var tokenEntity = await _dbContext.ShahkarRequestsLog

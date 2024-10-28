@@ -83,14 +83,8 @@ namespace AastanApis.Services
                 var loginUri = new Uri(_astanOptions.PgsbTokenAddress, UriKind.RelativeOrAbsolute);
                 var request = new HttpRequestMessage(HttpMethod.Post, loginUri);
 
-                var accToken = await _repository.FindToken().ConfigureAwait(false);
-                if (accToken is null || string.IsNullOrWhiteSpace(accToken))
-                {
-                    _logger.LogError($"An appropriate refreshToken not found -> {ErrorCode.NotFound.GetDisplayName()}");
-                    throw new RamzNegarException(ErrorCode.TokenNotFound,
-                        ErrorCode.AastanApiError.GetDisplayName());
-                }
-                request.AddAastanCommonHeader(accToken, _astanOptions);
+                var accToken = await _repository.FindAastanAccessToken();
+                request.AddAastanCommonHeader(Token: accToken, _astanOptions);
 
                 var response = await _httpClient.SendAsync(request)
                     .ConfigureAwait(false);
@@ -137,14 +131,10 @@ namespace AastanApis.Services
             {
                 var url = new Uri(_astanOptions.PersonConsentInquiryAddress, UriKind.RelativeOrAbsolute);
                 var request = new HttpRequestMessage(HttpMethod.Post, url);
-                var accToken = await _repository.FindToken().ConfigureAwait(false);
-                if (accToken is null || string.IsNullOrWhiteSpace(accToken))
-                {
-                    _logger.LogError($"An appropriate refreshToken not found -> {ErrorCode.NotFound.GetDisplayName()}");
-                    throw new RamzNegarException(ErrorCode.TokenNotFound,
-                                  ErrorCode.AastanApiError.GetDisplayName());
-                }
-                request.AddAastanCommonHeader(accToken, _astanOptions);
+
+                var accToken = await _repository.FindAastanAccessToken();
+                request.AddAastanCommonHeader(Token: accToken, _astanOptions);
+                
                 request.Content =
                       new StringContent(
                           JsonSerializer.Serialize(consentInquiryRequest, ServiceHelperExtension.JsonSerializerOptions),
