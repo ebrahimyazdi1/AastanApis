@@ -152,10 +152,9 @@ namespace AastanApis.Services
                 var responseDeserialize = JsonSerializer.Deserialize<ConsentInquiryRes>(responseBodyJson,
                      ServiceHelperExtension.JsonSerializerOptions);
 
-                responseDeserialize ??= new ConsentInquiryRes { IsSuccess = true, StatusCode = response.StatusCode.ToString() };
-                responseDeserialize.IsSuccess = true;
-                responseDeserialize.ResultMessage = responseBodyJson;
                 responseDeserialize.StatusCode = response.StatusCode.ToString();
+                responseDeserialize.ResultMessage = responseBodyJson;
+
                 return responseDeserialize;
             }
             catch (Exception ex)
@@ -190,7 +189,6 @@ namespace AastanApis.Services
                     throw new RamzNegarException(ErrorCode.TokenNotFound, ErrorCode.AastanApiError.GetDisplayName());
                 }
 
-                // Create the client request using provided input (no hardcoded values)
                 var clientRequest = new ClientCriminalRecordReqDto
                 {
                     MobileNumber = criminalRecordRequest.MobileNumber,
@@ -218,8 +216,6 @@ namespace AastanApis.Services
                 var responseDeserialize = JsonSerializer.Deserialize<CriminalRecordRes>(responseBodyJson,
                     ServiceHelperExtension.JsonSerializerOptions);
 
-                responseDeserialize ??= new CriminalRecordRes { IsSuccess = true, StatusCode = response.StatusCode.ToString() };
-                responseDeserialize.IsSuccess = true;
                 responseDeserialize.ResultMessage = responseBodyJson;
                 responseDeserialize.StatusCode = response.StatusCode.ToString();
 

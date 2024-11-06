@@ -1,6 +1,5 @@
 ﻿using AasanApis.Filters;
 using AasanApis.Infrastructure;
-using AasanApis.Models;
 using AastanApis.ErrorHandling;
 using AastanApis.Exceptions;
 using AastanApis.Models;

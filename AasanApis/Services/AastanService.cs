@@ -188,7 +188,7 @@ namespace AastanApis.Services
                     tokenOutput.Matched = true;
                 else
                     tokenOutput.Matched = false;
-
+                
                 return new OutputModel
                 {
                     Content = JsonSerializer.Serialize(tokenOutput),
@@ -310,7 +310,6 @@ namespace AastanApis.Services
                         StatusCode = result.Result.ToString(),
                         ReqLogId = requestId
                     };
-
                 }
 
                 return new OutputModel

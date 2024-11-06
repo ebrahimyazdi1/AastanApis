@@ -25,7 +25,6 @@ namespace AasanApis.Filters
             else if (context.Result is ObjectResult badRequestObjectResult && badRequestObjectResult.StatusCode == 400)
             {
                 var apiResult = new ApiResult(false, ErrorCode.BadRequest, requestId);
-                // Handle different types of error messages as before
                 context.Result = new JsonResult(apiResult) { StatusCode = badRequestObjectResult.StatusCode };
             }
             else if (context.Result is ObjectResult notFoundObjectResult && notFoundObjectResult.StatusCode == 404)
