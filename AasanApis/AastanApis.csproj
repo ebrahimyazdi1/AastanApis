@@ -14,8 +14,10 @@
     <PackageReference Include="BouncyCastle.NetCore" Version="2.2.1" />
     <PackageReference Include="FluentValidation" Version="11.7.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.7.1" />
+    <PackageReference Include="Hangfire" Version="1.8.15" />
+    <PackageReference Include="Hangfire.MemoryStorage" Version="1.8.1.1" />
     <PackageReference Include="jose-jwt" Version="4.1.0" />
-    <PackageReference Include="JsonWebToken" Version="2.0.0-beta.4"  />
+    <PackageReference Include="JsonWebToken" Version="2.0.0-beta.4" />
     <PackageReference Include="JWT" Version="10.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.10" />

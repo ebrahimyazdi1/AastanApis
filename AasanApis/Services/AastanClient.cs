@@ -16,6 +16,9 @@ namespace AastanApis.Services
     public class AastanClient : IAastanClient
     {
         private readonly ILogger<AastanClient> _logger;
+
+        private static readonly Dictionary<string, DateTime> _tokenExpirationData = new();
+
         public IAastanRepository _repository { get; }
         private readonly HttpClient _httpClient;
         private readonly BaseLog _baseLog;
@@ -108,6 +111,12 @@ namespace AastanApis.Services
                     return ServiceHelperExtension.GenerateErrorMethodResponse<PgsbTokenRes>(ErrorCode.NotFound);
                 }
 
+                if (tokenOutput != null && tokenOutput.ExpiresIn is not null)
+                {
+                    DateTime expirationTime = DateTime.UtcNow.AddSeconds((double)tokenOutput.ExpiresIn);
+                    _tokenExpirationData["ExpiresIn"] = expirationTime;
+                }
+
                 return new PgsbTokenRes
                 {
                     AccessToken = tokenOutput.AccessToken,
@@ -136,7 +145,7 @@ namespace AastanApis.Services
 
                 var accToken = await _repository.FindAastanAccessToken();
                 request.AddAastanCommonHeader(Token: accToken, _astanOptions);
-                
+
                 request.Content =
                       new StringContent(
                           JsonSerializer.Serialize(consentInquiryRequest, ServiceHelperExtension.JsonSerializerOptions),
@@ -231,7 +240,6 @@ namespace AastanApis.Services
             }
         }
 
-
         public async Task<RefreshTokenRes> GetRefreshTokenAsync(RefreshTokenReq refreshTokenReq)
         {
             var result = new Dictionary<string, string>
@@ -286,6 +294,47 @@ namespace AastanApis.Services
                 throw new RamzNegarException(ErrorCode.AastanApiError,
                     $"Exception occurred while: {nameof(GetTokenAsync)} => {ErrorCode.AastanApiError.GetDisplayName()}");
             }
+        }
+
+        public DateTime? GetPgsbTokenExpiration()
+        {
+            return _tokenExpirationData.ContainsKey("ExpiresIn") ? _tokenExpirationData["ExpiresIn"] : null;
+        }
+
+        public async Task RefreshExpiredPgsbToken()
+        {
+            var loginUri = new Uri(_astanOptions.PgsbTokenAddress, UriKind.RelativeOrAbsolute);
+            var request = new HttpRequestMessage(HttpMethod.Post, loginUri);
+
+            var accToken = await _repository.FindAastanAccessToken();
+            request.AddAastanCommonHeader(Token: accToken, _astanOptions);
+
+            var response = await _httpClient.SendAsync(request)
+                .ConfigureAwait(false);
+            var responseBodyJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            var tokenOutput =
+                JsonSerializer.Deserialize<PgsbTokenRes>(responseBodyJson,
+                    ServiceHelperExtension.JsonSerializerOptions);
+
+            if (tokenOutput != null && tokenOutput.ExpiresIn is not null)
+            {
+                DateTime expirationTime = DateTime.UtcNow.AddSeconds((double)tokenOutput.ExpiresIn);
+                _tokenExpirationData["ExpiresIn"] = expirationTime;
+            }
+
+            var token = new PgsbTokenRes
+            {
+                AccessToken = tokenOutput.AccessToken,
+                ExpiresIn = tokenOutput.ExpiresIn,
+                RefreshToken = tokenOutput.RefreshToken,
+                Scope = tokenOutput.Scope,
+                TokenType = tokenOutput.TokenType,
+                StatusCode = response.StatusCode.ToString(),
+                ResultMessage = responseBodyJson
+            };
+
+            await _repository.AddOrUpdatePgsbTokenAsync(token.AccessToken);
         }
     }
 }

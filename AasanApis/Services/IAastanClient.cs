@@ -11,5 +11,7 @@ namespace AastanApis.Services
         Task<PgsbTokenRes> GetPgsbTokenAsync();
         Task<ConsentInquiryRes> PostConsentInquiryAsync(ConsentInquiryReqDto consentInquiryRequest);
         Task<CriminalRecordRes> PostCriminalRecordAsync(CriminalRecordReqDto criminalRecordRequest);
+        Task RefreshExpiredPgsbToken();
+        DateTime? GetPgsbTokenExpiration();
     }
 }
