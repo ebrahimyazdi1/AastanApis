@@ -89,7 +89,7 @@ namespace AasanApis.Controllers
             var result = await AastanService.GetMatchingEncryptedAsync(matchingEncryptReq);
             try
             {
-                if (result.StatusCode != "OK")
+                if (result.StatusCode != "200")
                 {
                     _logger.LogError($"{nameof(AastanMatchingEncrypted)} not-success request - input \r\n response:{result.StatusCode}-{result.Content}");
                     return BadRequest(_baseLog.ApiResponeFailByCodeProvider<MatchingEncryptReqDTO>(result.Content, result.StatusCode, result.RequestId, matchingEncryptReq?.PublicLogData?.PublicReqId));

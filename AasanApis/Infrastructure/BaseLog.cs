@@ -37,7 +37,7 @@ namespace AasanApis.Infrastructure
         public ErrorResult ApiResponeFailByCodeProvider<T>(string response, string statusCode, string RequestId, string publicReqId) where T : new()
         {
             var codeProvider = new ErrorCodesProvider();
-            codeProvider = codeProvider.errorCodesResponseResult(statusCode.ToString());
+            codeProvider = codeProvider.errorCodesResponseResult(statusCode);
             _repository.InsertAastanResponseLog(new AastanResponseLogDTO
                 (publicReqId, Convert.ToString(response), codeProvider?.OutReponseCode.ToString(),
                          RequestId, codeProvider?.SafeReponseCode.ToString()));

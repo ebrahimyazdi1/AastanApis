@@ -140,7 +140,6 @@ namespace AastanApis.Services
                     //ServiceHelperExtension.GenerateApiErrorResponse<OutputModel>();
                 }
 
-
                 _logger.LogInformation($"{nameof(GetMatchingEncryptedAsync)} request sent - input is : \r\n {matchingEncryptReqDTO}");
                 AastanRequestLogDTO astanRequest = new AastanRequestLogDTO(matchingEncryptReqDTO.PublicLogData?.PublicReqId, matchingEncryptReqDTO.ToString(),
                     matchingEncryptReqDTO.PublicLogData?.UserId, matchingEncryptReqDTO.PublicLogData?.PublicAppId, matchingEncryptReqDTO.PublicLogData?.ServiceId);
@@ -158,7 +157,7 @@ namespace AastanApis.Services
                 var tokenIdentificationNo = JWESignManagement.GetEncryptedToken(matchingEncryptReqDTO.NationalCode,
                     data.Iat, publicKey);
 
-                MatchingEncryptReq machingData = new MatchingEncryptReq
+                MatchingEncryptReq machingData = new()
                 {
 
                     IdentificationNo = tokenIdentificationNo,
@@ -167,7 +166,6 @@ namespace AastanApis.Services
                     IdentificationType = 0,
                     ServiceNumber = tokenServiceNumber
                 };
-
 
                 var tokenResult = await _client.GetMatchingEncryptedAsync(machingData);
                 if (tokenResult is null)
@@ -180,11 +178,10 @@ namespace AastanApis.Services
                         StatusCode = tokenResult?.StatusCode,
                     };
                 }
-                //_ = _repository.UpdateShahkarRequestsLog(updateRequest);
-                //to do I should update and some fields in shahkarEntity in the database
-                var resResult = JsonSerializer.Deserialize<MatchingEncryptRes>(tokenResult.ResultMessage);
+
                 var tokenOutput = _mapper.Map<MatchingEncryptResDTO>(tokenResult);
-                if (resResult?.Result.Data.Response != 600)
+
+                if (tokenResult.StatusCode == "200")
                     tokenOutput.Matched = true;
                 else
                     tokenOutput.Matched = false;

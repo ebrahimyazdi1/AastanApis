@@ -24,12 +24,16 @@ namespace AasanApis.Filters
             }
             else if (context.Result is ObjectResult badRequestObjectResult && badRequestObjectResult.StatusCode == 400)
             {
-                var apiResult = new ApiResult(false, ErrorCode.BadRequest, requestId);
+                var errorResult = badRequestObjectResult.Value as ErrorResult;
+
+                var apiResult = new ApiResult(false, ErrorCode.BadRequest, requestId, errorResult!.ResultMessage);
                 context.Result = new JsonResult(apiResult) { StatusCode = badRequestObjectResult.StatusCode };
             }
             else if (context.Result is ObjectResult notFoundObjectResult && notFoundObjectResult.StatusCode == 404)
             {
-                var apiResult = new ApiResult(false, ErrorCode.NotFound, requestId);
+                var errorResult = notFoundObjectResult.Value as ErrorResult;
+
+                var apiResult = new ApiResult(false, ErrorCode.NotFound, requestId, errorResult!.ResultMessage);
                 context.Result = new JsonResult(apiResult) { StatusCode = notFoundObjectResult.StatusCode };
             }
             else if (context.Result is ContentResult contentResult)

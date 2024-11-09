@@ -43,7 +43,7 @@ public class AastanCreditInquiryController : ControllerBase
 
             _logger.LogError($"{nameof(GetPsgbToken)} not-success request - input \r\n" +
                             $"response:{result.StatusCode}-{result.Content}");
-            return BadRequest(_baseLog.ApiResponeFailByCodeProvider<BasePublicLogData>(result.Content,
+            return BadRequest(_baseLog.ApiResponseFailByPSGBCodeProvider<BasePublicLogData>(result.Content,
                 result.StatusCode, result.ReqLogId, result.RequestId));
         }
         catch (Exception ex)
@@ -70,7 +70,7 @@ public class AastanCreditInquiryController : ControllerBase
 
             _logger.LogError($"{nameof(PostConsentInquiry)} not-success request - input \r\n" +
                              $"response:{result.StatusCode}-{result.Content}");
-            return BadRequest(_baseLog.ApiResponeFailByCodeProvider<ConsentInquiryReqDto>(result.Content,
+            return BadRequest(_baseLog.ApiResponseFailByPSGBCodeProvider<ConsentInquiryReqDto>(result.Content,
                 result.StatusCode, result.ReqLogId, result.RequestId));
         }
         catch (Exception ex)

@@ -34,7 +34,8 @@ namespace AastanApis.Models
         public int IdentificationType { get; set; }
 
         /// <summary>
-        /// نوع سرویس )مقدار برابر 2( 
+        /// نوع سرویس )
+        /// برابر 2( 
         /// </summary>
         [JsonPropertyName("serviceType")]
         public int ServiceType { get; set; }

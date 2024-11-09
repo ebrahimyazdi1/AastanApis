@@ -22,26 +22,52 @@
             SafeResponseMessageDescription = ".شخص اهلیت قانونی معامله ندارد"
         },
 
-        "107" or "108" => new PSGBErrorCodesProvider
+        "107" => new PSGBErrorCodesProvider
         {
             SafeResponseCode = 107,
-            SafeResponseMessage = "IndividualDoesNotHaveFinancialAbility",
+            SafeResponseMessage = "IndividualHasBankruptcyRecord",
             OutResponseCode = 107,
+            SafeResponseMessageDescription = ".شخص سابقه ورشکستگی دارد"
+        },
+
+        "108" => new PSGBErrorCodesProvider
+        {
+            SafeResponseCode = 108,
+            SafeResponseMessage = "IndividualDoesNotHaveFinancialAbility",
+            OutResponseCode = 108,
             SafeResponseMessageDescription = ".شخص تمکن مالی ندارد"
         },
-        "109" or "110" => new PSGBErrorCodesProvider
+
+        "109" => new PSGBErrorCodesProvider
         {
             SafeResponseCode = 109,
-            SafeResponseMessage = "IndividualHasCriminalRecord",
+            SafeResponseMessage = "IndividualIsConvictedPersonOntheRun",
             OutResponseCode = 109,
-            SafeResponseMessageDescription = ".شخص سابقه محکومیت قضایی دارد"
+            SafeResponseMessageDescription = ".شخص محکوم متواری است"
         },
-        "400" or "401" or "402" => new PSGBErrorCodesProvider
+
+        "110" => new PSGBErrorCodesProvider
+        {
+            SafeResponseCode = 110,
+            SafeResponseMessage = "IndividualHasARecordOfUnenforcedFinancialConvictions",
+            OutResponseCode = 110,
+            SafeResponseMessageDescription = ".شخص سابقه محکومیت مالی اجرا نشده دارد"
+        },
+
+        "400" => new PSGBErrorCodesProvider
         {
             SafeResponseCode = 400,
             SafeResponseMessage = "InvalidInput",
             OutResponseCode = 400,
             SafeResponseMessageDescription = ".پارامترهای ورودی نامعتبر هستند"
+        },
+
+        "401" or "402" => new PSGBErrorCodesProvider
+        {
+            SafeResponseCode = 401,
+            SafeResponseMessage = "InvalidRegisterCode",
+            OutResponseCode = 401,
+            SafeResponseMessageDescription = " .کد رضایت مندی نامعتبر است"
         },
 
 

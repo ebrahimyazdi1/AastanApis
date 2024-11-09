@@ -66,10 +66,8 @@ namespace AastanApis.Services
                 var responseDeserialize = JsonSerializer.Deserialize<MatchingEncryptRes>(responseBodyJson,
                      ServiceHelperExtension.JsonSerializerOptions);
 
-                responseDeserialize ??= new MatchingEncryptRes() { IsSuccess = true, StatusCode = response.StatusCode.ToString() };
-                responseDeserialize.IsSuccess = true;
                 responseDeserialize.ResultMessage = responseBodyJson;
-                responseDeserialize.StatusCode = response.StatusCode.ToString();
+                responseDeserialize.StatusCode = responseDeserialize.Result.Data.Response.ToString();
 
                 return responseDeserialize;
 
