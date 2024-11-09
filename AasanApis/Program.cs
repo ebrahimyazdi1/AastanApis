@@ -60,8 +60,12 @@ app.UseHangfireDashboard();
 
 // Configure Hangfire recurring job
 var tokenJobService = app.Services.CreateScope().ServiceProvider.GetRequiredService<HangFireJobService>();
-RecurringJob.AddOrUpdate("check-and-refresh-token",
-    () => tokenJobService.CheckAndRefreshTokenAsync(),
-    "* * * * 1 *");
+RecurringJob.AddOrUpdate("check-and-refresh-psgb-token",
+    () => tokenJobService.CheckAndRefreshPSGBTokenAsync(),
+    "30 * * * * *");
+
+RecurringJob.AddOrUpdate("check-and-refresh-shahkar-token",
+    () => tokenJobService.CheckAndRefreshShakarTokenAsync(),
+    "30 * * * * *");
 
 app.Run();

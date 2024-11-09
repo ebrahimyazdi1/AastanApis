@@ -11,19 +11,32 @@ public class HangFireJobService
         _aastanService = service;
     }
 
-    public async Task CheckAndRefreshTokenAsync()
+    public async Task CheckAndRefreshShakarTokenAsync()
+    {
+        var expirationTime = _aastanService.GetShahkerTokenExpiration();
+        var currentTime = DateTime.UtcNow;
+
+        if (expirationTime.HasValue && expirationTime.Value <= currentTime)
+            await RefreshExpiredShakarToken();
+    }
+
+    public async Task CheckAndRefreshPSGBTokenAsync()
     {
         var expirationTime = _aastanService.GetPgsbTokenExpiration();
         var currentTime = DateTime.UtcNow;
 
-        await RefreshExpiredPgsbToken();
-        //if (expirationTime.HasValue && expirationTime.Value <= currentTime)
-        //    await RefreshExpiredPgsbToken();
+        if (expirationTime.HasValue && expirationTime.Value <= currentTime)
+            await RefreshExpiredPgsbToken();
     }
 
     public async Task RefreshExpiredPgsbToken()
     {
         await _aastanService.RefreshExpiredPgsbToken();
+    }
+
+    public async Task RefreshExpiredShakarToken()
+    {
+        await _aastanService.RefreshExpiredShahkarToken();
     }
 }
 

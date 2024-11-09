@@ -17,7 +17,9 @@ namespace AastanApis.Services
     {
         private readonly ILogger<AastanClient> _logger;
 
-        private static readonly Dictionary<string, DateTime> _tokenExpirationData = new();
+        private static readonly Dictionary<string, DateTime> _psgbTokenExpirationData = new();
+
+        private static readonly Dictionary<string, DateTime> _shahkarTokenExpirationData = new();
 
         public IAastanRepository _repository { get; }
         private readonly HttpClient _httpClient;
@@ -114,7 +116,7 @@ namespace AastanApis.Services
                 if (tokenOutput != null && tokenOutput.ExpiresIn is not null)
                 {
                     DateTime expirationTime = DateTime.UtcNow.AddSeconds((double)tokenOutput.ExpiresIn);
-                    _tokenExpirationData["ExpiresIn"] = expirationTime;
+                    _psgbTokenExpirationData["ExpiresIn"] = expirationTime;
                 }
 
                 return new PgsbTokenRes
@@ -276,6 +278,13 @@ namespace AastanApis.Services
                     _logger.LogError($"In the {nameof(GetTokenAsync)} access token is null-> {responseBodyJson}");
                     return ServiceHelperExtension.GenerateErrorMethodResponse<TokenRes>(ErrorCode.NotFound);
                 }
+
+                if (tokenOutput != null)
+                {
+                    DateTime expirationTime = DateTime.UtcNow.AddSeconds((double)tokenOutput.ExpireTimesInSecond);
+                    _shahkarTokenExpirationData["ExpiresIn"] = expirationTime;
+                }
+
                 return new TokenRes
                 {
                     AccessToken = tokenOutput.AccessToken,
@@ -298,7 +307,12 @@ namespace AastanApis.Services
 
         public DateTime? GetPgsbTokenExpiration()
         {
-            return _tokenExpirationData.ContainsKey("ExpiresIn") ? _tokenExpirationData["ExpiresIn"] : null;
+            return _psgbTokenExpirationData.ContainsKey("ExpiresIn") ? _psgbTokenExpirationData["ExpiresIn"] : null;
+        }
+
+        public DateTime? GetShahkerTokenExpiration()
+        {
+            return _shahkarTokenExpirationData.ContainsKey("ExpiresIn") ? _shahkarTokenExpirationData["ExpiresIn"] : null;
         }
 
         public async Task RefreshExpiredPgsbToken()
@@ -320,7 +334,7 @@ namespace AastanApis.Services
             if (tokenOutput != null && tokenOutput.ExpiresIn is not null)
             {
                 DateTime expirationTime = DateTime.UtcNow.AddSeconds((double)tokenOutput.ExpiresIn);
-                _tokenExpirationData["ExpiresIn"] = expirationTime;
+                _psgbTokenExpirationData["ExpiresIn"] = expirationTime;
             }
 
             var token = new PgsbTokenRes
@@ -335,6 +349,43 @@ namespace AastanApis.Services
             };
 
             await _repository.AddOrUpdatePgsbTokenAsync(token.AccessToken);
+        }
+
+        public async Task RefreshExpiredShahkarToken()
+        {
+            var loginUri = new Uri(_astanOptions.TokenAddress, UriKind.RelativeOrAbsolute);
+            var request = new HttpRequestMessage(HttpMethod.Post, loginUri);
+
+            var accToken = await _repository.FindAastanAccessToken();
+            request.AddAastanCommonHeader(Token: accToken, _astanOptions);
+
+            var response = await _httpClient.SendAsync(request)
+                .ConfigureAwait(false);
+            var responseBodyJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+ 
+            var tokenOutput =
+                JsonSerializer.Deserialize<TokenRes>(responseBodyJson,
+                    ServiceHelperExtension.JsonSerializerOptions);
+ 
+            if (tokenOutput != null)
+            {
+                DateTime expirationTime = DateTime.UtcNow.AddSeconds((double)tokenOutput.ExpireTimesInSecond);
+                _shahkarTokenExpirationData["ExpiresIn"] = expirationTime;
+            }
+
+            var result = new TokenRes
+            {
+                AccessToken = tokenOutput.AccessToken,
+                ExpireTimesInSecond = tokenOutput.ExpireTimesInSecond,
+                IsSuccess = response.IsSuccessStatusCode,
+                StatusCode = response.StatusCode.ToString(),
+                RefreshToken = tokenOutput.RefreshToken,
+                ResultMessage = responseBodyJson,
+                Scope = tokenOutput.Scope,
+                TokenType = tokenOutput.TokenType
+            };
+
+            await _repository.AddOrUpdateTokenAsync(result.AccessToken);
         }
     }
 }
