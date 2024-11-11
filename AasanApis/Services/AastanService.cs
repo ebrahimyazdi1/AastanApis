@@ -167,21 +167,21 @@ namespace AastanApis.Services
                     ServiceNumber = tokenServiceNumber
                 };
 
-                var tokenResult = await _client.GetMatchingEncryptedAsync(machingData);
-                if (tokenResult is null)
+                var result = await _client.GetMatchingEncryptedAsync(machingData);
+                if (result is null)
                 {
                     _logger.LogError($"the result of calling the MatchingEncryptedService is not ok {nameof(GetMatchingEncryptedAsync)}");
                     return new OutputModel
                     {
-                        Content = JsonSerializer.Serialize(tokenResult),
+                        Content = JsonSerializer.Serialize(result),
                         RequestId = publicRequestId?.ToString(),
-                        StatusCode = tokenResult?.StatusCode,
+                        StatusCode = result?.StatusCode,
                     };
                 }
 
-                var tokenOutput = _mapper.Map<MatchingEncryptResDTO>(tokenResult);
+                var tokenOutput = _mapper.Map<MatchingEncryptResDTO>(result);
 
-                if (tokenResult.StatusCode == "200")
+                if (result.StatusCode == "200")
                     tokenOutput.Matched = true;
                 else
                     tokenOutput.Matched = false;
@@ -190,7 +190,7 @@ namespace AastanApis.Services
                 {
                     Content = JsonSerializer.Serialize(tokenOutput),
                     RequestId = publicRequestId?.ToString(),
-                    StatusCode = tokenResult?.StatusCode,
+                    StatusCode = result?.StatusCode,
                 };
             }
             catch (Exception e)

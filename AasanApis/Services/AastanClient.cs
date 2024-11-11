@@ -217,18 +217,14 @@ namespace AastanApis.Services
                 var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
                 var responseBodyJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    _logger.LogInformation($"{nameof(PostConsentInquiryAsync)} -> the reason is {responseBodyJson}");
-                    return ServiceHelperExtension.GenerateErrorMethodResponse<CriminalRecordRes>(ErrorCode.AastanApiError);
-                }
+                _logger.LogInformation($"{nameof(PostConsentInquiryAsync)} -> the reason is \r\n {JsonSerializer.Serialize(responseBodyJson, ServiceHelperExtension.JsonSerializerOptions)}");
 
                 // Deserialize the response body
                 var responseDeserialize = JsonSerializer.Deserialize<CriminalRecordRes>(responseBodyJson,
                     ServiceHelperExtension.JsonSerializerOptions);
 
                 responseDeserialize.ResultMessage = responseBodyJson;
-                responseDeserialize.StatusCode = response.StatusCode.ToString();
+                responseDeserialize.StatusCode = responseDeserialize.result.ToString();
 
                 return responseDeserialize;
             }
@@ -360,11 +356,11 @@ namespace AastanApis.Services
             var response = await _httpClient.SendAsync(request)
                 .ConfigureAwait(false);
             var responseBodyJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
- 
+
             var tokenOutput =
                 JsonSerializer.Deserialize<TokenRes>(responseBodyJson,
                     ServiceHelperExtension.JsonSerializerOptions);
- 
+
             if (tokenOutput != null)
             {
                 DateTime expirationTime = DateTime.UtcNow.AddSeconds((double)tokenOutput.ExpireTimesInSecond);

@@ -54,7 +54,7 @@
             SafeResponseMessageDescription = ".شخص سابقه محکومیت مالی اجرا نشده دارد"
         },
 
-        "400" => new PSGBErrorCodesProvider
+        "400" or "AastanApiError" => new PSGBErrorCodesProvider
         {
             SafeResponseCode = 400,
             SafeResponseMessage = "InvalidInput",

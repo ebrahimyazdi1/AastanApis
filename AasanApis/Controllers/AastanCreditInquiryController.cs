@@ -91,7 +91,7 @@ public class AastanCreditInquiryController : ControllerBase
         var result = await AastanService.PostCriminalRecordAsync(request);
         try
         {
-            if (result.StatusCode is "OK")
+            if (result.StatusCode is "200")
                 return Ok(_baseLog.ApiResponseSuccessByCodeProvider<CriminalRecordResDto>(result.Content, result.StatusCode,
                     result.ReqLogId, result.RequestId));
 
