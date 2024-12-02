@@ -79,9 +79,14 @@ namespace AastanApis.Data.Repositories
             var accesTokenEntity = _dbContext.AccessTokens.SingleOrDefault(i => i.Id == "7");
             if (accesTokenEntity is null)
             {
-                accesTokenEntity = new AccessTokenEntity();
-                accesTokenEntity.Id = "7";
-                accesTokenEntity.TokenName = "AastanToken";
+                accesTokenEntity = new AccessTokenEntity
+                {
+                    Id = "7",
+                    TokenName = "AastanToken",
+                    AccessToken = accessToken,
+                    TokenDateTime = DateTime.Now
+                };
+
                 await _dbContext.AccessTokens.AddAsync(accesTokenEntity).ConfigureAwait(false);
             }
             accesTokenEntity.AccessToken = accessToken;
@@ -107,7 +112,9 @@ namespace AastanApis.Data.Repositories
                 accessTokenEntity = new AccessTokenEntity
                 {
                     Id = "11",
-                    TokenName = "AastanPgsbToken"
+                    TokenName = "AastanPgsbToken",
+                    TokenDateTime= DateTime.Now,
+                    AccessToken = accessToken
                 };
                 await _dbContext.AccessTokens.AddAsync(accessTokenEntity).ConfigureAwait(false);
             }
